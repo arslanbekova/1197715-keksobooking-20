@@ -130,7 +130,6 @@ var renderMapPins = function () {
 
 renderMapPins();
 
-var similarListElement = document.querySelector('.map');
 var similarAnnouncementCardTemplate = document.querySelector('#card')
   .content
   .querySelector('.map__card');
@@ -191,7 +190,7 @@ var getAnnouncementCard = function (announcement) {
   announcementCardElement.querySelector('.popup__type').textContent = getTypeOfHousing(TypeOfHousing);
 
   announcementCardElement.querySelector('.popup__text--capacity').textContent = announcement.offer.rooms + ' ' + 'комнаты для' + ' ' + announcement.offer.guests + ' ' + 'гостей';
-  announcementCardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + ' ' + announcement.offer.checkin + ',' +' ' + 'выезд до' + ' ' + announcement.offer.checkout;
+  announcementCardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + ' ' + announcement.offer.checkin + ',' + ' ' + 'выезд до' + ' ' + announcement.offer.checkout;
 
   var featuresArray = announcement.offer.features;
   featuresArray.forEach(function (feature) {
