@@ -28,7 +28,7 @@ var PHOTOS_ADDRESS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
-var COUNT_OF_ARRAY_ITEMS = 8;
+var COUNT_OF_ARRAY_ITEMS = 9;
 var MAX_X_POSITION = 1100;
 var MIN_Y_POSITION = 130;
 var MAX_Y_POSITION = 630;
@@ -56,28 +56,13 @@ var getRandomElement = function (array) {
   return array[Math.floor(Math.random() * Math.floor(array.length))];
 };
 
-// функция генерации массива с уникальными значениями
-var getUniqueArray = function (min, max, count) {
-  var i;
-  var array = [];
-  var uniqueArray = [];
-  for (i = min; i <= max; i++) {
-    array.push(i);
-  }
-  for (i = 0; i < count; i++) {
-    uniqueArray.push(array.splice(Math.floor(Math.random() * (array.length)), 1)[0]);
-  }
-  return uniqueArray;
-};
-
 // функция генерации массива со случайными объектами
 var getAnnouncementsData = function () {
   var announcements = [];
-  var avatarIDArray = getUniqueArray(1, 8, COUNT_OF_ARRAY_ITEMS);
-  for (var i = 0; i < COUNT_OF_ARRAY_ITEMS; i++) {
+  for (var i = 1; i < COUNT_OF_ARRAY_ITEMS; i++) {
     announcements[i] = {
       author: {
-        avatar: 'img/avatars/user0' + avatarIDArray[i] + '.png',
+        avatar: 'img/avatars/user0' + i + '.png',
       },
       offer: {
         title: 'Заголовок предложения',
@@ -122,7 +107,7 @@ var getMapPin = function (announcement) {
 var renderMapPins = function () {
   var pins = getAnnouncementsData();
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < pins.length; i++) {
+  for (var i = 1; i < pins.length; i++) {
     fragment.appendChild(getMapPin(pins[i]));
   }
   similarListElement.appendChild(fragment);
@@ -148,6 +133,9 @@ var getTypeOfHousing = function (TypeOfHousing) {
       break;
     case 'bungalo':
       TypeOfHousing = 'Бунгало';
+      break;
+    default:
+      TypeOfHousing = 'Квартира';
       break;
   }
   return TypeOfHousing;
@@ -237,11 +225,8 @@ var renderAnnouncementCards = function () {
   var announcementsList = document.createElement('div');
   announcementsList.className = 'map__cards';
 
-  for (var i = 0; i < cards.length; i++) {
-    fragment.appendChild(getAnnouncementCard(cards[i]));
-  }
+  fragment.appendChild(getAnnouncementCard(cards[1]));
   announcementsList.appendChild(fragment);
-  // console.log(announcementsList);
 
   var map = document.querySelector('.map');
   var filter = document.querySelector('.map__filters-container');
