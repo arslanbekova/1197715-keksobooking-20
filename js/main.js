@@ -34,8 +34,15 @@ var MIN_Y_POSITION = 130;
 var MAX_Y_POSITION = 630;
 var Y_GAP = 35;
 var X_GAP = 25;
+var PIN_X_GAP = 32;
+var PIN_HEIGHT = 80;
+var PIN_WIDTH = 64;
+var PIN_LEFT = 570;
+var PIN_TOP = 375;
 
-var similarListElement = document.querySelector('.map__pins');
+
+var map = document.querySelector('.map');
+var similarListPin = map.querySelector('.map__pins');
 
 var similarMapPinTemplate = document.querySelector('#pin')
   .content
@@ -55,6 +62,86 @@ var getRandomArbitrary = function (min, max) {
 var getRandomElement = function (array) {
   return array[Math.floor(Math.random() * Math.floor(array.length))];
 };
+
+var announcementForm = document.querySelector('.ad-form');
+var announcementFormAddresField = document.getElementById('address');
+announcementFormAddresField.setAttribute('value', '601, 406');
+
+var announcementFormFields = announcementForm.children;
+
+var filterForm = map.querySelector('.map__filters');
+var filterFormFields = filterForm.children;
+
+// функция добавления атрибута disabled элементам HTMLCollection
+var setDisabled = function (collection) {
+  for (var i = 0; i < collection.length; i++) {
+    collection[i].setAttribute('disabled', true);
+  }
+  return collection;
+};
+
+// функция удаления атрибута disabled у элементов HTMLCollection
+var removeDisabled = function (collection) {
+  for (var i = 0; i < collection.length; i++) {
+    collection[i].removeAttribute('disabled');
+  }
+  return collection;
+};
+
+setDisabled(announcementFormFields);
+setDisabled(filterFormFields);
+
+var mapPinMain = similarListPin.querySelector('.map__pin--main');
+
+// функция описывающая происходящие события на элелементе mapPinMainEvent
+var mapPinMainEvent = function (evt) {
+  if (evt.which === 1 || evt.key === 'Enter') {
+    map.classList.remove('map--faded');
+
+    removeDisabled(announcementFormFields);
+    removeDisabled(filterFormFields);
+
+    var pinX = PIN_LEFT + PIN_X_GAP;
+    var pinY = PIN_TOP + PIN_HEIGHT;
+    announcementFormAddresField.setAttribute('value', pinX + ',' + ' ' + pinY);
+  }
+};
+
+// функция добавления обработчика событий только один раз
+var addEventListenerOnce = function (target, type, listener) {
+  target.addEventListener(type, function fn(evt) {
+    target.removeEventListener(type, fn);
+    listener(evt);
+  });
+};
+
+addEventListenerOnce(mapPinMain, 'mousedown', mapPinMainEvent);
+addEventListenerOnce(mapPinMain, 'keydown', mapPinMainEvent);
+
+var roomNumbers = document.getElementById('room_number');
+var guestsCount = document.getElementById('capacity');
+var messageRoomNumberValidity = 'Количество комнат должно быть больше или равно количеству гостей';
+
+var checkRoomNumberValidity = function (message) {
+  var roomNumberValue = Number(roomNumbers.options[roomNumbers.selectedIndex].value);
+  var guestCountValue = Number(guestsCount.options[guestsCount.selectedIndex].value);
+  if (roomNumberValue === 1 && guestCountValue === 1) {
+  } else if (roomNumberValue === 2 && guestCountValue > 0 && guestCountValue < 3) {
+  } else if (roomNumberValue === 3 && guestCountValue > 0 && guestCountValue < 4) {
+  } else if (roomNumberValue === 100 && guestCountValue === 0) {
+  } else {
+    roomNumbers.setCustomValidity(message);
+  }
+};
+
+roomNumbers.addEventListener('change', function () {
+  checkRoomNumberValidity(messageRoomNumberValidity);
+});
+
+guestsCount.addEventListener('change', function () {
+  checkRoomNumberValidity(messageRoomNumberValidity);
+});
+
 
 // функция генерации массива со случайными объектами
 var getAnnouncementsData = function () {
@@ -83,12 +170,8 @@ var getAnnouncementsData = function () {
       }
     };
   }
-
-
   return announcements;
 };
-
-document.querySelector('.map').classList.remove('map--faded');
 
 // функция создания DOM-элемента (пин на карте)
 var getMapPin = function (announcement) {
@@ -103,135 +186,185 @@ var getMapPin = function (announcement) {
   return mapPinElement;
 };
 
-// функция заполнения блока DOM-элементами (отрисовка пинов)
-var renderMapPins = function () {
-  var pins = getAnnouncementsData();
-  var fragment = document.createDocumentFragment();
-  for (var i = 1; i < pins.length; i++) {
-    fragment.appendChild(getMapPin(pins[i]));
-  }
-  similarListElement.appendChild(fragment);
-};
+// // функция заполнения блока DOM-элементами (отрисовка пинов)
+// var renderMapPins = function () {
+//   var pins = getAnnouncementsData();
+//   var fragment = document.createDocumentFragment();
+//   for (var i = 1; i < pins.length; i++) {
+//     fragment.appendChild(getMapPin(pins[i]));
+//   }
+//   similarListPin.appendChild(fragment);
+// };
 
-renderMapPins();
+// // renderMapPins();
 
-var similarAnnouncementCardTemplate = document.querySelector('#card')
-  .content
-  .querySelector('.map__card');
+// var similarAnnouncementCardTemplate = document.querySelector('#card')
+//   .content
+//   .querySelector('.map__card');
 
-// функция проверки и получения элемента массива по идентификатору
-var getTypeOfHousing = function (TypeOfHousing) {
-  switch (TypeOfHousing) {
-    case 'palace':
-      TypeOfHousing = 'Дворец';
-      break;
-    case 'flat':
-      TypeOfHousing = 'Квартира';
-      break;
-    case 'house':
-      TypeOfHousing = 'Дом';
-      break;
-    case 'bungalo':
-      TypeOfHousing = 'Бунгало';
-      break;
-    default:
-      TypeOfHousing = 'Квартира';
-      break;
-  }
-  return TypeOfHousing;
-};
+// // функция проверки и получения элемента массива по идентификатору
+// var getTypeOfHousing = function (TypeOfHousing) {
+//   switch (TypeOfHousing) {
+//     case 'palace':
+//       TypeOfHousing = 'Дворец';
+//       break;
+//     case 'flat':
+//       TypeOfHousing = 'Квартира';
+//       break;
+//     case 'house':
+//       TypeOfHousing = 'Дом';
+//       break;
+//     case 'bungalo':
+//       TypeOfHousing = 'Бунгало';
+//       break;
+//     default:
+//       TypeOfHousing = 'Квартира';
+//       break;
+//   }
+//   return TypeOfHousing;
+// };
 
-var getRuFacilities = function (ruFacilities) {
-  switch (ruFacilities) {
-    case 'wifi':
-      ruFacilities = 'WiFi';
-      break;
-    case 'dishwasher':
-      ruFacilities = 'Посудомоечная машина';
-      break;
-    case 'parking':
-      ruFacilities = 'Паркинг';
-      break;
-    case 'washer':
-      ruFacilities = 'Стиральная машинка';
-      break;
-    case 'elevator':
-      ruFacilities = 'Лифт';
-      break;
-    case 'conditioner':
-      ruFacilities = 'Кондиционер';
-      break;
-  }
-  return ruFacilities;
-};
+// var getRuFacilities = function (ruFacilities) {
+//   switch (ruFacilities) {
+//     case 'wifi':
+//       ruFacilities = 'WiFi';
+//       break;
+//     case 'dishwasher':
+//       ruFacilities = 'Посудомоечная машина';
+//       break;
+//     case 'parking':
+//       ruFacilities = 'Паркинг';
+//       break;
+//     case 'washer':
+//       ruFacilities = 'Стиральная машинка';
+//       break;
+//     case 'elevator':
+//       ruFacilities = 'Лифт';
+//       break;
+//     case 'conditioner':
+//       ruFacilities = 'Кондиционер';
+//       break;
+//   }
+//   return ruFacilities;
+// };
 
-// функция создания DOM-элемента (карточка объявления)
-var getAnnouncementCard = function (announcement) {
+// // функция создания DOM-элемента (карточка объявления)
+// var getAnnouncementCard = function (announcement) {
 
-  var announcementCardElement = similarAnnouncementCardTemplate.cloneNode(true);
+//   var announcementCardElement = similarAnnouncementCardTemplate.cloneNode(true);
 
-  announcementCardElement.querySelector('.popup__title').textContent = announcement.offer.title;
-  announcementCardElement.querySelector('.popup__text--address').textContent = announcement.offer.address;
-  announcementCardElement.querySelector('.popup__text--price').textContent = announcement.offer.price + '₽/ночь';
+//   announcementCardElement.querySelector('.popup__title').textContent = announcement.offer.title;
+//   announcementCardElement.querySelector('.popup__text--address').textContent = announcement.offer.address;
+//   announcementCardElement.querySelector('.popup__text--price').textContent = announcement.offer.price + '₽/ночь';
 
-  var TypeOfHousing = announcement.offer.type;
-  announcementCardElement.querySelector('.popup__type').textContent = getTypeOfHousing(TypeOfHousing);
+//   var TypeOfHousing = announcement.offer.type;
+//   announcementCardElement.querySelector('.popup__type').textContent = getTypeOfHousing(TypeOfHousing);
 
-  announcementCardElement.querySelector('.popup__text--capacity').textContent = announcement.offer.rooms + ' ' + 'комнаты для' + ' ' + announcement.offer.guests + ' ' + 'гостей';
-  announcementCardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + ' ' + announcement.offer.checkin + ',' + ' ' + 'выезд до' + ' ' + announcement.offer.checkout;
+//   announcementCardElement.querySelector('.popup__text--capacity').textContent = announcement.offer.rooms + ' ' + 'комнаты для' + ' ' + announcement.offer.guests + ' ' + 'гостей';
+//   announcementCardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + ' ' + announcement.offer.checkin + ',' + ' ' + 'выезд до' + ' ' + announcement.offer.checkout;
 
-  var featuresArray = announcement.offer.features;
-  featuresArray.forEach(function (feature) {
-    var featuresList = announcementCardElement.querySelector('.popup__features');
-    var fragment = document.createDocumentFragment();
-    var newFeatureElement = document.createElement('li');
+//   var featuresArray = announcement.offer.features;
+//   featuresArray.forEach(function (feature) {
+//     var featuresList = announcementCardElement.querySelector('.popup__features');
+//     var fragment = document.createDocumentFragment();
+//     var newFeatureElement = document.createElement('li');
 
-    newFeatureElement.className = 'popup__feature--' + feature;
-    newFeatureElement.textContent = getRuFacilities(feature);
+//     newFeatureElement.className = 'popup__feature--' + feature;
+//     newFeatureElement.textContent = getRuFacilities(feature);
 
-    fragment.appendChild(newFeatureElement);
-    featuresList.appendChild(fragment);
-  });
+//     fragment.appendChild(newFeatureElement);
+//     featuresList.appendChild(fragment);
+//   });
 
 
-  announcementCardElement.querySelector('.popup__description').textContent = announcement.offer.description;
+//   announcementCardElement.querySelector('.popup__description').textContent = announcement.offer.description;
 
-  var photosArray = announcement.offer.photos;
-  photosArray.forEach(function (photo) {
-    var photosList = announcementCardElement.querySelector('.popup__photos');
-    var fragment = document.createDocumentFragment();
-    var newPhotoElement = document.createElement('img');
+//   var photosArray = announcement.offer.photos;
+//   photosArray.forEach(function (photo) {
+//     var photosList = announcementCardElement.querySelector('.popup__photos');
+//     var fragment = document.createDocumentFragment();
+//     var newPhotoElement = document.createElement('img');
 
-    newPhotoElement.className = 'popup__photo';
-    newPhotoElement.width = 45;
-    newPhotoElement.height = 40;
-    newPhotoElement.alt = 'Фотография жилья';
-    newPhotoElement.src = photo;
+//     newPhotoElement.className = 'popup__photo';
+//     newPhotoElement.width = 45;
+//     newPhotoElement.height = 40;
+//     newPhotoElement.alt = 'Фотография жилья';
+//     newPhotoElement.src = photo;
 
-    fragment.appendChild(newPhotoElement);
-    photosList.appendChild(fragment);
-  });
+//     fragment.appendChild(newPhotoElement);
+//     photosList.appendChild(fragment);
+//   });
 
-  announcementCardElement.querySelector('.popup__avatar').src = announcement.author.avatar;
+//   announcementCardElement.querySelector('.popup__avatar').src = announcement.author.avatar;
 
-  return announcementCardElement;
-};
+//   return announcementCardElement;
+// };
 
-// функция заполнения блока DOM-элементами (отрисовка карточек)
-var renderAnnouncementCards = function () {
+// // функция заполнения блока DOM-элементами (отрисовка карточек)
+// var renderAnnouncementCards = function () {
 
-  var cards = getAnnouncementsData();
-  var fragment = document.createDocumentFragment();
-  var announcementsList = document.createElement('div');
-  announcementsList.className = 'map__cards';
+//   var cards = getAnnouncementsData();
+//   var fragment = document.createDocumentFragment();
+//   var announcementsList = document.createElement('div');
+//   announcementsList.className = 'map__cards';
 
-  fragment.appendChild(getAnnouncementCard(cards[1]));
-  announcementsList.appendChild(fragment);
+//   fragment.appendChild(getAnnouncementCard(cards[1]));
+//   announcementsList.appendChild(fragment);
 
-  var map = document.querySelector('.map');
-  var filter = document.querySelector('.map__filters-container');
+//   var filter = map.querySelector('.map__filters-container');
 
-  map.insertBefore(announcementsList, filter);
-};
+//   map.insertBefore(announcementsList, filter);
+// };
 
-renderAnnouncementCards();
+// renderAnnouncementCards();
+
+
+// var announcementForm = document.querySelector('.ad-form');
+// var announcementFormFields = announcementForm.children;
+
+// var filterForm = map.querySelector('.map__filters');
+// var filterFormFields = filterForm.children;
+
+// // функция добавления атрибута disabled HTMLCollection
+// var setDisabled = function (collection) {
+//   for (var i = 0; i < collection.length; i++) {
+//     collection[i].setAttribute('disabled', true)
+//   };
+//   return collection;
+// };
+
+// // функция удаления атрибута disabled HTMLCollection
+// var removeDisabled = function (collection) {
+//   for (var i = 0; i < collection.length; i++) {
+//     collection[i].removeAttribute('disabled')
+//   };
+//   return collection;
+// };
+
+// setDisabled(announcementFormFields);
+// setDisabled(filterFormFields);
+
+// var mapPinMain = similarListPin.querySelector('.map__pin--main');
+
+// // функция описывающая происходящие события на элелементе mapPinMainEvent
+// var mapPinMainEvent = function (evt) {
+//   if (evt.which === 1 || evt.key === 'Enter') {
+//     map.classList.remove('map--faded');
+
+//     removeDisabled(announcementFormFields);
+//     removeDisabled(filterFormFields);
+
+
+//   };
+// };
+
+// // функция добавления обработчика событий только один раз
+// var addEventListenerOnce = function (target, type, listener) {
+//   target.addEventListener(type, function fn(evt) {
+//     target.removeEventListener(type, fn);
+//     listener(evt);
+//   });
+// };
+
+// addEventListenerOnce(mapPinMain, 'mousedown', mapPinMainEvent);
+// addEventListenerOnce(mapPinMain, 'keydown', mapPinMainEvent);
