@@ -62,91 +62,6 @@ var getRandomElement = function (array) {
   return array[Math.floor(Math.random() * Math.floor(array.length))];
 };
 
-var announcementForm = document.querySelector('.ad-form');
-var announcementFormAddresField = document.getElementById('address');
-announcementFormAddresField.setAttribute('value', '601, 406');
-
-var announcementFormFields = announcementForm.children;
-
-var filterForm = map.querySelector('.map__filters');
-var filterFormFields = filterForm.children;
-
-// функция добавления атрибута disabled элементам HTMLCollection
-var setDisabled = function (collection) {
-  for (var i = 0; i < collection.length; i++) {
-    collection[i].setAttribute('disabled', true);
-  }
-  return collection;
-};
-
-// функция удаления атрибута disabled у элементов HTMLCollection
-var removeDisabled = function (collection) {
-  for (var i = 0; i < collection.length; i++) {
-    collection[i].removeAttribute('disabled');
-  }
-  return collection;
-};
-
-setDisabled(announcementFormFields);
-setDisabled(filterFormFields);
-
-var mapPinMain = similarListPin.querySelector('.map__pin--main');
-
-// функция описывающая происходящие события на элелементе mapPinMainEvent
-var mapPinMainEvent = function (evt) {
-  if (evt.which === 1 || evt.key === 'Enter') {
-    map.classList.remove('map--faded');
-
-    removeDisabled(announcementFormFields);
-    removeDisabled(filterFormFields);
-
-    var pinX = PIN_LEFT + PIN_X_GAP;
-    var pinY = PIN_TOP + PIN_HEIGHT;
-    announcementFormAddresField.setAttribute('value', pinX + ',' + ' ' + pinY);
-  }
-};
-
-// функция добавления обработчика событий только один раз
-var addEventListenerOnce = function (target, type, listener) {
-  target.addEventListener(type, function fn(evt) {
-    target.removeEventListener(type, fn);
-    listener(evt);
-  });
-};
-
-addEventListenerOnce(mapPinMain, 'mousedown', mapPinMainEvent);
-addEventListenerOnce(mapPinMain, 'keydown', mapPinMainEvent);
-
-// валидация полей количество комнат и количество гостей
-var roomNumbers = document.getElementById('room_number');
-var guestsCount = document.getElementById('capacity');
-var messageRoomNumberValidity = 'Количество комнат должно быть больше или равно количеству гостей';
-
-var checkRoomNumberValidity = function (message) {
-  var roomNumberValue = Number(roomNumbers.options[roomNumbers.selectedIndex].value);
-  var guestCountValue = Number(guestsCount.options[guestsCount.selectedIndex].value);
-  if (roomNumberValue === 1 && guestCountValue === 1) {
-    roomNumbers.setCustomValidity('');
-  } else if (roomNumberValue === 2 && guestCountValue > 0 && guestCountValue < 3) {
-    roomNumbers.setCustomValidity('');
-  } else if (roomNumberValue === 3 && guestCountValue > 0 && guestCountValue < 4) {
-    roomNumbers.setCustomValidity('');
-  } else if (roomNumberValue === 100 && guestCountValue === 0) {
-    roomNumbers.setCustomValidity('');
-  } else {
-    roomNumbers.setCustomValidity(message);
-  }
-};
-
-roomNumbers.addEventListener('change', function () {
-  checkRoomNumberValidity(messageRoomNumberValidity);
-});
-
-guestsCount.addEventListener('change', function () {
-  checkRoomNumberValidity(messageRoomNumberValidity);
-});
-
-
 // функция генерации массива со случайными объектами
 var getAnnouncementsData = function () {
   var announcements = [];
@@ -199,8 +114,6 @@ var renderMapPins = function () {
   }
   similarListPin.appendChild(fragment);
 };
-
-renderMapPins();
 
 var similarAnnouncementCardTemplate = document.querySelector('#card')
   .content
@@ -320,5 +233,95 @@ var renderAnnouncementCards = function () {
   map.insertBefore(announcementsList, filter);
 };
 
-renderAnnouncementCards();
+var announcementForm = document.querySelector('.ad-form');
+var announcementFormAddresField = document.getElementById('address');
+announcementFormAddresField.setAttribute('value', '601, 406');
 
+var announcementFormFields = announcementForm.children;
+
+var filterForm = map.querySelector('.map__filters');
+var filterFormFields = filterForm.children;
+
+// функция добавления обработчика событий только один раз
+var addEventListenerOnce = function (target, type, listener) {
+  target.addEventListener(type, function fn(evt) {
+    target.removeEventListener(type, fn);
+    listener(evt);
+  });
+};
+
+// функция добавления атрибута disabled элементам HTMLCollection
+var setDisabled = function (collection) {
+  for (var i = 0; i < collection.length; i++) {
+    collection[i].setAttribute('disabled', true);
+  }
+  return collection;
+};
+
+// функция удаления атрибута disabled у элементов HTMLCollection
+var removeDisabled = function (collection) {
+  for (var i = 0; i < collection.length; i++) {
+    collection[i].removeAttribute('disabled');
+  }
+  return collection;
+};
+
+setDisabled(announcementFormFields);
+setDisabled(filterFormFields);
+
+var mapPinMain = similarListPin.querySelector('.map__pin--main');
+
+// функция описывающая происходящие события на элелементе mapPinMainEvent
+var mapPinMainEvent = function (evt) {
+  if (evt.which === 1 || evt.key === 'Enter') {
+    map.classList.remove('map--faded');
+
+    renderMapPins();
+    renderAnnouncementCards();
+
+    removeDisabled(announcementFormFields);
+    announcementForm.classList.remove('ad-form--disabled');
+
+    removeDisabled(filterFormFields);
+
+    var pinX = PIN_LEFT + PIN_X_GAP;
+    var pinY = PIN_TOP + PIN_HEIGHT;
+    announcementFormAddresField.setAttribute('value', pinX + ',' + ' ' + pinY);
+  }
+};
+
+addEventListenerOnce(mapPinMain, 'mousedown', mapPinMainEvent);
+addEventListenerOnce(mapPinMain, 'keydown', mapPinMainEvent);
+
+// валидация полей количество комнат и количество гостей
+var roomNumbers = document.getElementById('room_number');
+var guestsCount = document.getElementById('capacity');
+var messageRoomNumberValidity = 'Количество комнат должно быть больше или равно количеству гостей';
+
+var checkRoomNumberValidity = function (message) {
+  var roomNumberValue = Number(roomNumbers.options[roomNumbers.selectedIndex].value);
+  var guestCountValue = Number(guestsCount.options[guestsCount.selectedIndex].value);
+  if (roomNumberValue === 1 && guestCountValue === 1) {
+    roomNumbers.setCustomValidity('');
+  } else if (roomNumberValue === 2 && guestCountValue > 0 && guestCountValue < 3) {
+    roomNumbers.setCustomValidity('');
+  } else if (roomNumberValue === 3 && guestCountValue > 0 && guestCountValue < 4) {
+    roomNumbers.setCustomValidity('');
+  } else if (roomNumberValue === 100 && guestCountValue === 0) {
+    roomNumbers.setCustomValidity('');
+  } else {
+    roomNumbers.setCustomValidity(message);
+  }
+};
+
+roomNumbers.addEventListener('change', function () {
+  checkRoomNumberValidity(messageRoomNumberValidity);
+});
+
+guestsCount.addEventListener('change', function () {
+  checkRoomNumberValidity(messageRoomNumberValidity);
+});
+
+window.addEventListener('load', function () {
+  checkRoomNumberValidity(messageRoomNumberValidity);
+});
