@@ -28,14 +28,20 @@ var PHOTOS_ADDRESS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
-var COUNT_OF_ARRAY_ITEMS = 8;
+var COUNT_OF_ARRAY_ITEMS = 9;
 var MAX_X_POSITION = 1100;
 var MIN_Y_POSITION = 130;
 var MAX_Y_POSITION = 630;
 var Y_GAP = 35;
 var X_GAP = 25;
+var PIN_X_GAP = 32;
+var PIN_HEIGHT = 80;
+var PIN_LEFT = 570;
+var PIN_TOP = 375;
 
-var similarListElement = document.querySelector('.map__pins');
+
+var map = document.querySelector('.map');
+var similarListPin = map.querySelector('.map__pins');
 
 var similarMapPinTemplate = document.querySelector('#pin')
   .content
@@ -56,28 +62,13 @@ var getRandomElement = function (array) {
   return array[Math.floor(Math.random() * Math.floor(array.length))];
 };
 
-// функция генерации массива с уникальными значениями
-var getUniqueArray = function (min, max, count) {
-  var i;
-  var array = [];
-  var uniqueArray = [];
-  for (i = min; i <= max; i++) {
-    array.push(i);
-  }
-  for (i = 0; i < count; i++) {
-    uniqueArray.push(array.splice(Math.floor(Math.random() * (array.length)), 1)[0]);
-  }
-  return uniqueArray;
-};
-
 // функция генерации массива со случайными объектами
 var getAnnouncementsData = function () {
   var announcements = [];
-  var avatarIDArray = getUniqueArray(1, 8, COUNT_OF_ARRAY_ITEMS);
-  for (var i = 0; i < COUNT_OF_ARRAY_ITEMS; i++) {
+  for (var i = 1; i < COUNT_OF_ARRAY_ITEMS; i++) {
     announcements[i] = {
       author: {
-        avatar: 'img/avatars/user0' + avatarIDArray[i] + '.png',
+        avatar: 'img/avatars/user0' + i + '.png',
       },
       offer: {
         title: 'Заголовок предложения',
@@ -98,12 +89,8 @@ var getAnnouncementsData = function () {
       }
     };
   }
-
-
   return announcements;
 };
-
-document.querySelector('.map').classList.remove('map--faded');
 
 // функция создания DOM-элемента (пин на карте)
 var getMapPin = function (announcement) {
@@ -122,13 +109,11 @@ var getMapPin = function (announcement) {
 var renderMapPins = function () {
   var pins = getAnnouncementsData();
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < pins.length; i++) {
+  for (var i = 1; i < pins.length; i++) {
     fragment.appendChild(getMapPin(pins[i]));
   }
-  similarListElement.appendChild(fragment);
+  similarListPin.appendChild(fragment);
 };
-
-renderMapPins();
 
 var similarAnnouncementCardTemplate = document.querySelector('#card')
   .content
@@ -148,6 +133,9 @@ var getTypeOfHousing = function (TypeOfHousing) {
       break;
     case 'bungalo':
       TypeOfHousing = 'Бунгало';
+      break;
+    default:
+      TypeOfHousing = 'Квартира';
       break;
   }
   return TypeOfHousing;
@@ -237,16 +225,103 @@ var renderAnnouncementCards = function () {
   var announcementsList = document.createElement('div');
   announcementsList.className = 'map__cards';
 
-  for (var i = 0; i < cards.length; i++) {
-    fragment.appendChild(getAnnouncementCard(cards[i]));
-  }
+  fragment.appendChild(getAnnouncementCard(cards[1]));
   announcementsList.appendChild(fragment);
-  // console.log(announcementsList);
 
-  var map = document.querySelector('.map');
-  var filter = document.querySelector('.map__filters-container');
+  var filter = map.querySelector('.map__filters-container');
 
   map.insertBefore(announcementsList, filter);
 };
 
-renderAnnouncementCards();
+var announcementForm = document.querySelector('.ad-form');
+var announcementFormAddresField = document.getElementById('address');
+announcementFormAddresField.setAttribute('value', '601, 406');
+
+var announcementFormFields = announcementForm.children;
+
+var filterForm = map.querySelector('.map__filters');
+var filterFormFields = filterForm.children;
+
+// функция добавления обработчика событий только один раз
+var addEventListenerOnce = function (target, type, listener) {
+  target.addEventListener(type, function fn(evt) {
+    target.removeEventListener(type, fn);
+    listener(evt);
+  });
+};
+
+// функция добавления атрибута disabled элементам HTMLCollection
+var setDisabled = function (collection) {
+  for (var i = 0; i < collection.length; i++) {
+    collection[i].setAttribute('disabled', true);
+  }
+  return collection;
+};
+
+// функция удаления атрибута disabled у элементов HTMLCollection
+var removeDisabled = function (collection) {
+  for (var i = 0; i < collection.length; i++) {
+    collection[i].removeAttribute('disabled');
+  }
+  return collection;
+};
+
+setDisabled(announcementFormFields);
+setDisabled(filterFormFields);
+
+var mapPinMain = similarListPin.querySelector('.map__pin--main');
+
+// функция описывающая происходящие события на элелементе mapPinMainEvent
+var mapPinMainEvent = function (evt) {
+  if (evt.which === 1 || evt.key === 'Enter') {
+    map.classList.remove('map--faded');
+
+    renderMapPins();
+    renderAnnouncementCards();
+
+    removeDisabled(announcementFormFields);
+    announcementForm.classList.remove('ad-form--disabled');
+
+    removeDisabled(filterFormFields);
+
+    var pinX = PIN_LEFT + PIN_X_GAP;
+    var pinY = PIN_TOP + PIN_HEIGHT;
+    announcementFormAddresField.setAttribute('value', pinX + ',' + ' ' + pinY);
+  }
+};
+
+addEventListenerOnce(mapPinMain, 'mousedown', mapPinMainEvent);
+addEventListenerOnce(mapPinMain, 'keydown', mapPinMainEvent);
+
+// валидация полей количество комнат и количество гостей
+var roomNumbers = document.getElementById('room_number');
+var guestsCount = document.getElementById('capacity');
+var messageRoomNumberValidity = 'Количество комнат должно быть больше или равно количеству гостей';
+
+var checkRoomNumberValidity = function (message) {
+  var roomNumberValue = Number(roomNumbers.options[roomNumbers.selectedIndex].value);
+  var guestCountValue = Number(guestsCount.options[guestsCount.selectedIndex].value);
+  if (roomNumberValue === 1 && guestCountValue === 1) {
+    roomNumbers.setCustomValidity('');
+  } else if (roomNumberValue === 2 && guestCountValue > 0 && guestCountValue < 3) {
+    roomNumbers.setCustomValidity('');
+  } else if (roomNumberValue === 3 && guestCountValue > 0 && guestCountValue < 4) {
+    roomNumbers.setCustomValidity('');
+  } else if (roomNumberValue === 100 && guestCountValue === 0) {
+    roomNumbers.setCustomValidity('');
+  } else {
+    roomNumbers.setCustomValidity(message);
+  }
+};
+
+roomNumbers.addEventListener('change', function () {
+  checkRoomNumberValidity(messageRoomNumberValidity);
+});
+
+guestsCount.addEventListener('change', function () {
+  checkRoomNumberValidity(messageRoomNumberValidity);
+});
+
+window.addEventListener('load', function () {
+  checkRoomNumberValidity(messageRoomNumberValidity);
+});
