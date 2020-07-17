@@ -122,49 +122,65 @@ var similarAnnouncementCardTemplate = document.querySelector('#card')
   .querySelector('.map__card');
 
 // функция проверки и получения элемента массива по идентификатору
-var getTypeOfHousing = function (TypeOfHousing) {
+var ruTypesOfHousing = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало',
+};
+
+var getRuTypeOfHousing = function (TypeOfHousing) {
   switch (TypeOfHousing) {
     case 'palace':
-      TypeOfHousing = 'Дворец';
+      TypeOfHousing = ruTypesOfHousing.palace;;
       break;
     case 'flat':
-      TypeOfHousing = 'Квартира';
+      TypeOfHousing = ruTypesOfHousing.flat;;
       break;
     case 'house':
-      TypeOfHousing = 'Дом';
+      TypeOfHousing = ruTypesOfHousing.house;;
       break;
     case 'bungalo':
-      TypeOfHousing = 'Бунгало';
+      TypeOfHousing = ruTypesOfHousing.bungalo;;
       break;
     default:
-      TypeOfHousing = 'Квартира';
+      TypeOfHousing = ruTypesOfHousing.flat;;
       break;
   }
   return TypeOfHousing;
 };
 
-var getRuFacilities = function (ruFacilities) {
-  switch (ruFacilities) {
+var ruFacilities = {
+  wifi: 'WiFi',
+  dishwasher: 'Посудомоечная машина',
+  parking: 'Паркинг',
+  washer: 'Стиральная машинка',
+  elevator: 'Лифт',
+  conditioner: 'Кондиционер',
+};
+
+var getRuFacilities = function (facility) {
+  switch (facility) {
     case 'wifi':
-      ruFacilities = 'WiFi';
+      facility = ruFacilities.wifi;
       break;
     case 'dishwasher':
-      ruFacilities = 'Посудомоечная машина';
+      facility = ruFacilities.dishwasher;
       break;
     case 'parking':
-      ruFacilities = 'Паркинг';
+      facility = ruFacilities.parking;
       break;
     case 'washer':
-      ruFacilities = 'Стиральная машинка';
+      facility = ruFacilities.washer;
       break;
     case 'elevator':
-      ruFacilities = 'Лифт';
+      facility = ruFacilities.elevator;
       break;
     case 'conditioner':
-      ruFacilities = 'Кондиционер';
+      facility = ruFacilities.conditioner;
       break;
   }
-  return ruFacilities;
+  return facility;
 };
 
 // функция создания DOM-элемента (карточка объявления)
@@ -177,7 +193,7 @@ var getAnnouncementCard = function (announcement) {
   announcementCardElement.querySelector('.popup__text--price').textContent = announcement.offer.price + '₽/ночь';
 
   var TypeOfHousing = announcement.offer.type;
-  announcementCardElement.querySelector('.popup__type').textContent = getTypeOfHousing(TypeOfHousing);
+  announcementCardElement.querySelector('.popup__type').textContent = getRuTypeOfHousing(TypeOfHousing);
 
   announcementCardElement.querySelector('.popup__text--capacity').textContent = announcement.offer.rooms + ' ' + 'комнаты для' + ' ' + announcement.offer.guests + ' ' + 'гостей';
   announcementCardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + ' ' + announcement.offer.checkin + ',' + ' ' + 'выезд до' + ' ' + announcement.offer.checkout;
@@ -246,24 +262,20 @@ var addEventListenerOnce = function (target, type, listener) {
   });
 };
 
-// функция добавления атрибута disabled элементам HTMLCollection
-var setDisabled = function (collection) {
+// функция добавления или удаления атрибута disabled у элементов HTMLCollection
+var setOrRemoveAttribute = function (collection, attr, value) {
   for (var i = 0; i < collection.length; i++) {
-    collection[i].setAttribute('disabled', true);
+    if (collection[i].hasAttribute(attr)) {
+      collection[i].removeAttribute(attr);
+    } else {
+      collection[i].setAttribute(attr, value);
+    }
   }
   return collection;
 };
 
-// функция удаления атрибута disabled у элементов HTMLCollection
-var removeDisabled = function (collection) {
-  for (var i = 0; i < collection.length; i++) {
-    collection[i].removeAttribute('disabled');
-  }
-  return collection;
-};
-
-setDisabled(announcementFormFields);
-setDisabled(filterFormFields);
+setOrRemoveAttribute(announcementFormFields, 'disabled', true);
+setOrRemoveAttribute(filterFormFields, 'disabled', true);
 
 var mapPinMain = similarListPin.querySelector('.map__pin--main');
 
@@ -273,10 +285,10 @@ var mapPinMainEvent = function (evt) {
     map.classList.remove('map--faded');
 
     renderMapPins();
-    removeDisabled(announcementFormFields);
+    setOrRemoveAttribute(announcementFormFields, 'disabled');
     announcementForm.classList.remove('ad-form--disabled');
 
-    removeDisabled(filterFormFields);
+    setOrRemoveAttribute(filterFormFields, 'disabled');
 
     var pinX = PIN_LEFT + PIN_X_GAP;
     var pinY = PIN_TOP + PIN_HEIGHT;
@@ -287,41 +299,16 @@ var mapPinMainEvent = function (evt) {
 addEventListenerOnce(mapPinMain, 'mousedown', mapPinMainEvent);
 addEventListenerOnce(mapPinMain, 'keydown', mapPinMainEvent);
 
-// отрисовка карточки объявления по клику или нажатию на Enter
-var renderAnnouncementPopup = function (evt) {
-  var activeElement = evt.target;
-  var activeMapPin = document.querySelector('.map__pin--active');
-  var addElementActiveClass = function () {
-    if (activeElement.tagName === 'BUTTON') {
-      activeElement.classList.add('map__pin--active');
-    } else if (activeElement.tagName === 'IMG') {
-      activeElement.parentNode.classList.add('map__pin--active');
-    }
-  };
-
-  if (activeElement.tagName === 'BUTTON' || activeElement.tagName === 'IMG' && activeElement.hasAttribute('data-number')) {
-    if (getElementAnnouncementCard() === null) {
-      renderAnnouncementCards(activeElement.dataset.number);
-      addElementActiveClass();
-      helpCloseAnnouncementCard(activeElement);
-    } else {
-      getElementAnnouncementCard().remove();
-      activeMapPin.classList.remove('map__pin--active');
-      addElementActiveClass();
-      renderAnnouncementCards(activeElement.dataset.number);
-      helpCloseAnnouncementCard(activeElement);
-    }
+// добавление класса active метке
+var addElementActiveClass = function (evtTarget) {
+  if (evtTarget.tagName === 'BUTTON') {
+    evtTarget.classList.add('map__pin--active');
+  } else if (evtTarget.tagName === 'IMG') {
+    evtTarget.parentNode.classList.add('map__pin--active');
   }
 };
 
-similarListPin.addEventListener('click', renderAnnouncementPopup);
-similarListPin.addEventListener('keydown', function (evt) {
-  if (evt.key === 'Enter') {
-    renderAnnouncementPopup();
-  }
-});
-
-// функция получения DOM-эелемента
+// функция получения DOM-элелемента
 var getElementAnnouncementCard = function () {
   var announcementCard = document.querySelector('.popup');
   return announcementCard;
@@ -333,36 +320,51 @@ var getElementAnnouncementCardClose = function () {
 };
 
 // закрытие карточки объявления по клику и нажатию на esc
-var helpCloseAnnouncementCard = function (activeElement) {
-
-  var closeAnnouncementCard = function () {
-    getElementAnnouncementCard().remove();
-
-    if (activeElement.tagName === 'IMG') {
-      activeElement.parentNode.classList.remove('map__pin--active');
-    } else {
-      activeElement.classList.remove('map__pin--active');
-    }
-
-    activeElement.classList.remove('map__pin--active');
-
-    document.removeEventListener('keydown', function (evt) {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        getElementAnnouncementCard().remove();
-        activeElement.classList.remove('map__pin--active');
-      }
-    });
-  };
-
-  getElementAnnouncementCardClose().addEventListener('click', closeAnnouncementCard);
-
-  getElementAnnouncementCardClose().addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
-      closeAnnouncementCard();
-    }
-  });
+var closeAnnouncementCard = function () {
+  getElementAnnouncementCard().remove();
+  var activeMapPin = document.querySelector('.map__pin--active');
+  activeMapPin.classList.remove('map__pin--active');
+  document.removeEventListener('keydown', closeAnnouncementCardOnEsc);
 };
+
+var closeAnnouncementCardOnEsc = function (evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    closeAnnouncementCard();
+  }
+};
+
+// helper для отрисовки карточки
+var helpRenderAnnouncementPopup = function (evtTarget) {
+  renderAnnouncementCards(evtTarget.dataset.number); // отрисовка карточки
+  addElementActiveClass(evtTarget); //добавление класса active
+  document.addEventListener('keydown', closeAnnouncementCardOnEsc); // добавление обработчика на закрытие по esc
+  getElementAnnouncementCardClose().addEventListener('click', closeAnnouncementCard); //добавление обработчика по закрытию на клик
+};
+
+// отрисовка карточки объявления по клику или нажатию на Enter
+var renderAnnouncementPopup = function (evt) {
+  var activeElement = evt.target;
+  var activeMapPin = document.querySelector('.map__pin--active');
+
+  if (activeElement.tagName === 'BUTTON' || activeElement.tagName === 'IMG' && activeElement.hasAttribute('data-number')) {
+    if (getElementAnnouncementCard() === null) {
+      helpRenderAnnouncementPopup(activeElement);
+    } else {
+      getElementAnnouncementCard().remove(); // удаление карточки
+      activeMapPin.classList.remove('map__pin--active'); // удаление класса active
+      helpRenderAnnouncementPopup(activeElement);
+    }
+  }
+};
+
+similarListPin.addEventListener('click', renderAnnouncementPopup);
+similarListPin.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    renderAnnouncementPopup(evt);
+  }
+});
+
 
 // валидация полей количество комнат и количество гостей
 var roomNumbers = document.getElementById('room_number');
