@@ -1,5 +1,12 @@
 'use strict';
 (function () {
+
+  var fillAddressField = function (coords) {
+    window.activate.announcementFormAddresField.value = coords.x + ', ' + coords.y;
+  };
+
+  window.fillAddressField = fillAddressField;
+
   // валидация полей количество комнат и количество гостей
   var roomNumbers = document.getElementById('room_number');
   var guestsCount = document.getElementById('capacity');

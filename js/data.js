@@ -30,9 +30,9 @@
   ];
 
   var COUNT_OF_ARRAY_ITEMS = 9;
-  var MAX_X_POSITION = 1100;
-  var MIN_Y_POSITION = 130;
+  var MAX_X_POSITION = 1150;
   var MAX_Y_POSITION = 630;
+  var MIN_Y_POSITION = 130;
 
   // функция генерации массива со случайными объектами
   var getAnnouncementsData = function () {
@@ -47,23 +47,23 @@
           title: 'Заголовок предложения',
           address: '600, 350',
           price: 5000,
-          type: window.util.getRandomElement(TYPES_OF_HOUSING),
-          rooms: window.util.getRandomArbitrary(1, 6),
-          guests: window.util.getRandomArbitrary(1, 6),
-          checkin: window.util.getRandomElement(CHECKIN_CHECKOUT_TIMES),
-          checkout: window.util.getRandomElement(CHECKIN_CHECKOUT_TIMES),
-          features: FACILITIES.slice(window.util.getRandomInt(FACILITIES.length)),
+          type: window.utils.getRandomElement(TYPES_OF_HOUSING),
+          rooms: window.utils.getRandomArbitrary(1, 6),
+          guests: window.utils.getRandomArbitrary(1, 6),
+          checkin: window.utils.getRandomElement(CHECKIN_CHECKOUT_TIMES),
+          checkout: window.utils.getRandomElement(CHECKIN_CHECKOUT_TIMES),
+          features: FACILITIES.slice(window.utils.getRandomInt(FACILITIES.length)),
           description: 'Описание объявления',
-          photos: PHOTOS_ADDRESS.slice(window.util.getRandomInt(PHOTOS_ADDRESS.length)),
+          photos: PHOTOS_ADDRESS.slice(window.utils.getRandomInt(PHOTOS_ADDRESS.length)),
         },
         location: {
-          x: window.util.getRandomInt(MAX_X_POSITION),
-          y: window.util.getRandomArbitrary(MIN_Y_POSITION, MAX_Y_POSITION),
+          x: window.utils.getRandomInt(MAX_X_POSITION),
+          y: window.utils.getRandomArbitrary(MIN_Y_POSITION, MAX_Y_POSITION),
         }
       };
     }
     return announcements;
   };
 
-  window.announcements = getAnnouncementsData();
+  window.getAnnouncementsData = getAnnouncementsData;
 })();

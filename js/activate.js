@@ -14,22 +14,25 @@
   var map = document.querySelector('.map');
 
   // функция активации страницы
-  window.activatePage = function (evt) {
+  var activatePage = function (evt) {
     if (evt.which === 1 || evt.key === 'Enter') {
       map.classList.remove('map--faded');
       announcementForm.classList.remove('ad-form--disabled');
 
-      window.util.setOrRemoveAttribute(announcementFormFields, 'disabled');
-      window.util.setOrRemoveAttribute(filterFormFields, 'disabled');
+      window.utils.setOrRemoveAttribute(announcementFormFields, 'disabled');
+      window.utils.setOrRemoveAttribute(filterFormFields, 'disabled');
 
-      window.renderMapPins();
+      window.pin.renderMapPins();
 
       var pinX = PIN_LEFT + PIN_X_GAP;
       var pinY = PIN_TOP + PIN_HEIGHT;
       announcementFormAddresField.setAttribute('value', pinX + ',' + ' ' + pinY);
     }
   };
-
-  window.announcementFormFields = announcementFormFields;
-  window.filterFormFields = filterFormFields;
+  window.activate = {
+    announcementFormAddresField: announcementFormAddresField,
+    announcementFormFields: announcementFormFields,
+    filterFormFields: filterFormFields,
+    activatePage: activatePage,
+  };
 })();

@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-  window.util = {
+  window.utils = {
     // функция генерации случайного числа
     getRandomInt: function (max) {
       return Math.round(Math.floor(Math.random() * Math.floor(max)));

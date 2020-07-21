@@ -31,7 +31,7 @@
 
 
   var closeAnnouncementCardOnEsc = function (evt) {
-    window.util.isEscEvent(evt, closeAnnouncementCard);
+    window.utils.isEscEvent(evt, closeAnnouncementCard);
   };
 
   // helper для отрисовки карточки
@@ -43,18 +43,20 @@
   };
 
   // отрисовка карточки объявления по клику или нажатию на Enter
-  window.renderAnnouncementPopup = function (evt) {
+  var renderAnnouncementPopup = function (evt) {
     var activeElement = evt.target;
     var activeMapPin = document.querySelector('.map__pin--active');
 
     if (activeElement.tagName === 'BUTTON' || activeElement.tagName === 'IMG' && activeElement.hasAttribute('data-number')) {
-      if (getElementAnnouncementCard() === null) {
+      if (getElementAnnouncementCard() === null && !activeElement.classList.contains('map__pin--main')) {
         helpRenderAnnouncementPopup(activeElement);
-      } else {
+      } else if (!activeElement.classList.contains('map__pin--main')) {
         getElementAnnouncementCard().remove();
         activeMapPin.classList.remove('map__pin--active');
         helpRenderAnnouncementPopup(activeElement);
       }
     }
   };
+
+  window.renderAnnouncementPopup = renderAnnouncementPopup;
 })();
