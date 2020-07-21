@@ -73,8 +73,8 @@
       var Border = {
         TOP: MIN_Y_POSITION,
         BOTTOM: MAX_Y_POSITION - mapPinMain.offsetHeight,
-        LEFT: MIN_X_POSITION - mapPinMain.offsetWidth/2,
-        RIGHT: MAX_X_POSITION - mapPinMain.offsetWidth/2
+        LEFT: MIN_X_POSITION - mapPinMain.offsetWidth / 2,
+        RIGHT: MAX_X_POSITION - mapPinMain.offsetWidth / 2
       };
 
       if (mapPinMainPosition.x >= Border.LEFT && mapPinMainPosition.x <= Border.RIGHT) {
@@ -90,7 +90,7 @@
       };
 
       window.fillAddressField(coordsForAddressField);
-  };
+    };
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
