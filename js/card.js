@@ -6,61 +6,61 @@
 
   // функция проверки и получения элемента массива по идентификатору
   var ruTypesOfHousing = {
-    palace: 'Дворец',
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало',
+    PALACE: 'Дворец',
+    FLAT: 'Квартира',
+    HOUSE: 'Дом',
+    BUNGALO: 'Бунгало',
   };
 
   var getRuTypeOfHousing = function (TypeOfHousing) {
     switch (TypeOfHousing) {
       case 'palace':
-        TypeOfHousing = ruTypesOfHousing.palace;
+        TypeOfHousing = ruTypesOfHousing.PALACE;
         break;
       case 'flat':
-        TypeOfHousing = ruTypesOfHousing.flat;
+        TypeOfHousing = ruTypesOfHousing.FLAT;
         break;
       case 'house':
-        TypeOfHousing = ruTypesOfHousing.house;
+        TypeOfHousing = ruTypesOfHousing.HOUSE;
         break;
       case 'bungalo':
-        TypeOfHousing = ruTypesOfHousing.bungalo;
+        TypeOfHousing = ruTypesOfHousing.BUNGALO;
         break;
       default:
-        TypeOfHousing = ruTypesOfHousing.flat;
+        TypeOfHousing = ruTypesOfHousing.FLAT;
         break;
     }
     return TypeOfHousing;
   };
 
   var ruFacilities = {
-    wifi: 'WiFi',
-    dishwasher: 'Посудомоечная машина',
-    parking: 'Паркинг',
-    washer: 'Стиральная машинка',
-    elevator: 'Лифт',
-    conditioner: 'Кондиционер',
+    WIFI: 'WiFi',
+    DISHWASHER: 'Посудомоечная машина',
+    PARKING: 'Паркинг',
+    WASHER: 'Стиральная машинка',
+    ELEVATOR: 'Лифт',
+    CONDITIONER: 'Кондиционер',
   };
 
   var getRuFacilities = function (facility) {
     switch (facility) {
       case 'wifi':
-        facility = ruFacilities.wifi;
+        facility = ruFacilities.WIFI;
         break;
       case 'dishwasher':
-        facility = ruFacilities.dishwasher;
+        facility = ruFacilities.DISHWASHER;
         break;
       case 'parking':
-        facility = ruFacilities.parking;
+        facility = ruFacilities.PARKING;
         break;
       case 'washer':
-        facility = ruFacilities.washer;
+        facility = ruFacilities.WASHER;
         break;
       case 'elevator':
-        facility = ruFacilities.elevator;
+        facility = ruFacilities.ELEVATOR;
         break;
       case 'conditioner':
-        facility = ruFacilities.conditioner;
+        facility = ruFacilities.CONDITIONER;
         break;
     }
     return facility;
@@ -94,7 +94,6 @@
       featuresList.appendChild(fragment);
     });
 
-
     announcementCardElement.querySelector('.popup__description').textContent = announcement.offer.description;
 
     var photosArray = announcement.offer.photos;
@@ -119,12 +118,14 @@
   };
 
   // функция заполнения блока DOM-элементами (отрисовка карточек)
-  window.renderAnnouncementCards = function (elem) {
+  var renderAnnouncementCards = function (elem) {
     var map = document.querySelector('.map');
     var filter = map.querySelector('.map__filters-container');
     var fragment = document.createDocumentFragment();
-    fragment.appendChild(getAnnouncementCard(window.announcements[elem]));
+    fragment.appendChild(getAnnouncementCard(window.pin.announcements[elem]));
 
     map.insertBefore(fragment, filter);
   };
+
+  window.renderAnnouncementCards = renderAnnouncementCards;
 })();
