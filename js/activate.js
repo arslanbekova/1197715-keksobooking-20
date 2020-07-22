@@ -19,10 +19,10 @@
       map.classList.remove('map--faded');
       announcementForm.classList.remove('ad-form--disabled');
 
-      window.utils.setOrRemoveAttribute(announcementFormFields, 'disabled');
-      window.utils.setOrRemoveAttribute(filterFormFields, 'disabled');
+      window.utils.removeAttribute(announcementFormFields, 'disabled');
+      window.utils.removeAttribute(filterFormFields, 'disabled');
 
-      window.pin.renderMapPins();
+      window.data.loadData('https://javascript.pages.academy/keksobooking/data', window.data.onSuccess, window.data.onError);
 
       var pinX = PIN_LEFT + PIN_X_GAP;
       var pinY = PIN_TOP + PIN_HEIGHT;

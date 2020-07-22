@@ -35,25 +35,25 @@
   };
 
   // helper для отрисовки карточки
-  var helpRenderAnnouncementPopup = function (evtTarget) {
-    window.renderAnnouncementCards(evtTarget.dataset.number);
+  var helpRenderAnnouncementPopup = function (evtTarget, data) {
+    window.renderAnnouncementCards(data, evtTarget.dataset.number);
     addElementActiveClass(evtTarget);
     document.addEventListener('keydown', closeAnnouncementCardOnEsc);
     getElementAnnouncementCardClose().addEventListener('click', closeAnnouncementCard);
   };
 
   // отрисовка карточки объявления по клику или нажатию на Enter
-  var renderAnnouncementPopup = function (evt) {
+  var renderAnnouncementPopup = function (evt, data) {
     var activeElement = evt.target;
     var activeMapPin = document.querySelector('.map__pin--active');
 
     if (activeElement.tagName === 'BUTTON' || activeElement.tagName === 'IMG' && activeElement.hasAttribute('data-number')) {
       if (getElementAnnouncementCard() === null && !activeElement.classList.contains('map__pin--main')) {
-        helpRenderAnnouncementPopup(activeElement);
+        helpRenderAnnouncementPopup(activeElement, data);
       } else if (!activeElement.classList.contains('map__pin--main')) {
         getElementAnnouncementCard().remove();
         activeMapPin.classList.remove('map__pin--active');
-        helpRenderAnnouncementPopup(activeElement);
+        helpRenderAnnouncementPopup(activeElement, data);
       }
     }
   };

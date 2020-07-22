@@ -1,20 +1,6 @@
 'use strict';
 (function () {
   window.utils = {
-    // функция генерации случайного числа
-    getRandomInt: function (max) {
-      return Math.round(Math.floor(Math.random() * Math.floor(max)));
-    },
-
-    // функция генерации случайного числа в заданном интервале
-    getRandomArbitrary: function (min, max) {
-      return Math.round(Math.random() * (max - min) + min);
-    },
-
-    // функция возвращения случайного элемента из массива
-    getRandomElement: function (array) {
-      return array[Math.floor(Math.random() * Math.floor(array.length))];
-    },
 
     // функция добавления обработчика событий только один раз
     addEventListenerOnce: function (target, type, listener) {
@@ -24,14 +10,18 @@
       });
     },
 
-    // функция добавления или удаления атрибута у элементов HTMLCollection
-    setOrRemoveAttribute: function (collection, attr, value) {
+    // функция добавления атрибута у элементов HTMLCollection
+    setAttribute: function (collection, attr, value) {
       for (var i = 0; i < collection.length; i++) {
-        if (collection[i].hasAttribute(attr)) {
-          collection[i].removeAttribute(attr);
-        } else {
-          collection[i].setAttribute(attr, value);
-        }
+        collection[i].setAttribute(attr, value);
+      }
+      return collection;
+    },
+
+    // функция удаления атрибута у элементов HTMLCollection
+    removeAttribute: function (collection, attr) {
+      for (var i = 0; i < collection.length; i++) {
+        collection[i].removeAttribute(attr);
       }
       return collection;
     },
@@ -40,13 +30,6 @@
       if (evt.key === 'Escape') {
         evt.preventDefault();
         action();
-      }
-    },
-
-    isEnterEvent: function (evt, action) {
-      if (evt.key === 'Enter') {
-        evt.preventDefault();
-        action(evt);
       }
     }
   };
