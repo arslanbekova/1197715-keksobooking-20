@@ -58,5 +58,19 @@
     }
   };
 
-  window.renderAnnouncementPopup = renderAnnouncementPopup;
+  var onSuccess = function (data) {
+    window.pin.renderMapPins(data);
+    window.pin.similarListPin.addEventListener('click', function (evt) {
+      renderAnnouncementPopup(evt, data);
+    });
+
+    window.pin.similarListPin.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        evt.preventDefault();
+        renderAnnouncementPopup(evt, data);
+      }
+    });
+  };
+
+  window.onSuccess = onSuccess;
 })();

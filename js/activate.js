@@ -22,7 +22,7 @@
       window.utils.removeAttribute(announcementFormFields, 'disabled');
       window.utils.removeAttribute(filterFormFields, 'disabled');
 
-      window.data.loadData('https://javascript.pages.academy/keksobooking/data', window.data.onSuccess, window.data.onError);
+      window.data.loadData('https://javascript.pages.academy/keksobooking/data', window.onSuccess);
 
       var pinX = PIN_LEFT + PIN_X_GAP;
       var pinY = PIN_TOP + PIN_HEIGHT;

@@ -1,14 +1,18 @@
 'use strict';
 
 (function () {
+  var Code = {
+    SUCCESS: 200,
+  };
+
   var loadData = function (url, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
-        onSuccess(xhr.response);
+      if (xhr.status === Code.SUCCESS) {
+        window.onSuccess(xhr.response);
       } else {
         onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
@@ -28,23 +32,7 @@
     xhr.send();
   };
 
-  var onSuccess = function (data) {
-    var announcements = data;
-    window.pin.renderMapPins(announcements);
-    window.pin.similarListPin.addEventListener('click', function (evt) {
-      window.renderAnnouncementPopup(evt, announcements);
-    });
-
-    window.pin.similarListPin.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
-        evt.preventDefault();
-        window.renderAnnouncementPopup(evt, announcements);
-      }
-    });
-  };
-
   window.data = {
     loadData: loadData,
-    onSuccess: onSuccess,
   };
 })();

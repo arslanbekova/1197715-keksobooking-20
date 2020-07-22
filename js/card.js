@@ -5,7 +5,7 @@
     .querySelector('.map__card');
 
   // функция проверки и получения элемента массива по идентификатору
-  var RuTypesOfHousing = {
+  var RuTypeOfHousing = {
     PALACE: 'Дворец',
     FLAT: 'Квартира',
     HOUSE: 'Дом',
@@ -15,25 +15,25 @@
   var getRuTypeOfHousing = function (typeOfHousing) {
     switch (typeOfHousing) {
       case 'palace':
-        typeOfHousing = RuTypesOfHousing.PALACE;
+        typeOfHousing = RuTypeOfHousing.PALACE;
         break;
       case 'flat':
-        typeOfHousing = RuTypesOfHousing.FLAT;
+        typeOfHousing = RuTypeOfHousing.FLAT;
         break;
       case 'house':
-        typeOfHousing = RuTypesOfHousing.HOUSE;
+        typeOfHousing = RuTypeOfHousing.HOUSE;
         break;
       case 'bungalo':
-        typeOfHousing = RuTypesOfHousing.BUNGALO;
+        typeOfHousing = RuTypeOfHousing.BUNGALO;
         break;
       default:
-        typeOfHousing = RuTypesOfHousing.FLAT;
+        typeOfHousing = RuTypeOfHousing.FLAT;
         break;
     }
     return typeOfHousing;
   };
 
-  var RuFacilities = {
+  var RuFacility = {
     WIFI: 'WiFi',
     DISHWASHER: 'Посудомоечная машина',
     PARKING: 'Паркинг',
@@ -45,22 +45,22 @@
   var getRuFacilities = function (facility) {
     switch (facility) {
       case 'wifi':
-        facility = RuFacilities.WIFI;
+        facility = RuFacility.WIFI;
         break;
       case 'dishwasher':
-        facility = RuFacilities.DISHWASHER;
+        facility = RuFacility.DISHWASHER;
         break;
       case 'parking':
-        facility = RuFacilities.PARKING;
+        facility = RuFacility.PARKING;
         break;
       case 'washer':
-        facility = RuFacilities.WASHER;
+        facility = RuFacility.WASHER;
         break;
       case 'elevator':
-        facility = RuFacilities.ELEVATOR;
+        facility = RuFacility.ELEVATOR;
         break;
       case 'conditioner':
-        facility = RuFacilities.CONDITIONER;
+        facility = RuFacility.CONDITIONER;
         break;
     }
     return facility;
