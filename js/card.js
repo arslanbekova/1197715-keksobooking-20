@@ -5,35 +5,35 @@
     .querySelector('.map__card');
 
   // функция проверки и получения элемента массива по идентификатору
-  var ruTypesOfHousing = {
+  var RuTypesOfHousing = {
     PALACE: 'Дворец',
     FLAT: 'Квартира',
     HOUSE: 'Дом',
     BUNGALO: 'Бунгало',
   };
 
-  var getRuTypeOfHousing = function (TypeOfHousing) {
-    switch (TypeOfHousing) {
+  var getRuTypeOfHousing = function (typeOfHousing) {
+    switch (typeOfHousing) {
       case 'palace':
-        TypeOfHousing = ruTypesOfHousing.PALACE;
+        typeOfHousing = RuTypesOfHousing.PALACE;
         break;
       case 'flat':
-        TypeOfHousing = ruTypesOfHousing.FLAT;
+        typeOfHousing = RuTypesOfHousing.FLAT;
         break;
       case 'house':
-        TypeOfHousing = ruTypesOfHousing.HOUSE;
+        typeOfHousing = RuTypesOfHousing.HOUSE;
         break;
       case 'bungalo':
-        TypeOfHousing = ruTypesOfHousing.BUNGALO;
+        typeOfHousing = RuTypesOfHousing.BUNGALO;
         break;
       default:
-        TypeOfHousing = ruTypesOfHousing.FLAT;
+        typeOfHousing = RuTypesOfHousing.FLAT;
         break;
     }
-    return TypeOfHousing;
+    return typeOfHousing;
   };
 
-  var ruFacilities = {
+  var RuFacilities = {
     WIFI: 'WiFi',
     DISHWASHER: 'Посудомоечная машина',
     PARKING: 'Паркинг',
@@ -45,22 +45,22 @@
   var getRuFacilities = function (facility) {
     switch (facility) {
       case 'wifi':
-        facility = ruFacilities.WIFI;
+        facility = RuFacilities.WIFI;
         break;
       case 'dishwasher':
-        facility = ruFacilities.DISHWASHER;
+        facility = RuFacilities.DISHWASHER;
         break;
       case 'parking':
-        facility = ruFacilities.PARKING;
+        facility = RuFacilities.PARKING;
         break;
       case 'washer':
-        facility = ruFacilities.WASHER;
+        facility = RuFacilities.WASHER;
         break;
       case 'elevator':
-        facility = ruFacilities.ELEVATOR;
+        facility = RuFacilities.ELEVATOR;
         break;
       case 'conditioner':
-        facility = ruFacilities.CONDITIONER;
+        facility = RuFacilities.CONDITIONER;
         break;
     }
     return facility;
@@ -75,8 +75,8 @@
     announcementCardElement.querySelector('.popup__text--address').textContent = announcement.offer.address;
     announcementCardElement.querySelector('.popup__text--price').textContent = announcement.offer.price + '₽/ночь';
 
-    var TypeOfHousing = announcement.offer.type;
-    announcementCardElement.querySelector('.popup__type').textContent = getRuTypeOfHousing(TypeOfHousing);
+    var typeOfHousing = announcement.offer.type;
+    announcementCardElement.querySelector('.popup__type').textContent = getRuTypeOfHousing(typeOfHousing);
 
     announcementCardElement.querySelector('.popup__text--capacity').textContent = announcement.offer.rooms + ' ' + 'комнаты для' + ' ' + announcement.offer.guests + ' ' + 'гостей';
     announcementCardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + ' ' + announcement.offer.checkin + ',' + ' ' + 'выезд до' + ' ' + announcement.offer.checkout;
@@ -118,11 +118,11 @@
   };
 
   // функция заполнения блока DOM-элементами (отрисовка карточек)
-  var renderAnnouncementCards = function (elem) {
+  var renderAnnouncementCards = function (data, elem) {
     var map = document.querySelector('.map');
     var filter = map.querySelector('.map__filters-container');
     var fragment = document.createDocumentFragment();
-    fragment.appendChild(getAnnouncementCard(window.pin.announcements[elem]));
+    fragment.appendChild(getAnnouncementCard(data[elem]));
 
     map.insertBefore(fragment, filter);
   };

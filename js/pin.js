@@ -10,8 +10,6 @@
   var MAX_Y_POSITION = 630;
   var MIN_Y_POSITION = 130;
 
-  var announcements = window.getAnnouncementsData();
-
   var map = document.querySelector('.map');
 
   var similarListPin = map.querySelector('.map__pins');
@@ -22,7 +20,7 @@
     .querySelector('.map__pin');
 
   // функция создания DOM-элемента (пины на карте)
-  var getMapPin = function (announcement) {
+  var getMapPin = function (announcement, i) {
 
     var mapPinElement = similarMapPinTemplate.cloneNode(true);
 
@@ -30,16 +28,16 @@
     mapPinElement.style.top = announcement.location.y - Y_GAP + 'px';
     mapPinElement.querySelector('img').alt = announcement.offer.title;
     mapPinElement.querySelector('img').src = announcement.author.avatar;
-    mapPinElement.querySelector('img').setAttribute('data-number', announcement.number);
-    mapPinElement.setAttribute('data-number', announcement.number);
+    mapPinElement.querySelector('img').setAttribute('data-number', i);
+    mapPinElement.setAttribute('data-number', i);
     return mapPinElement;
   };
 
   // функция заполнения блока DOM-элементами (отрисовка пинов)
-  var renderMapPins = function () {
+  var renderMapPins = function (data) {
     var fragment = document.createDocumentFragment();
-    for (var i = 1; i < announcements.length; i++) {
-      fragment.appendChild(getMapPin(announcements[i]));
+    for (var i = 0; i < data.length; i++) {
+      fragment.appendChild(getMapPin(data[i], i));
     }
     similarListPin.appendChild(fragment);
   };
@@ -105,7 +103,6 @@
 
   window.pin = {
     renderMapPins: renderMapPins,
-    announcements: announcements,
     mapPinMain: mapPinMain,
     similarListPin: similarListPin,
   };
