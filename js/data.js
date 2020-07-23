@@ -1,18 +1,18 @@
 'use strict';
 
 (function () {
-  var Code = {
+  var StatusCode = {
     SUCCESS: 200,
   };
 
-  var loadData = function (url, onSuccess, onError) {
+  var getData = function (url, onSuccessLoad, onError) {
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === Code.SUCCESS) {
-        window.onSuccess(xhr.response);
+      if (xhr.status === StatusCode.SUCCESS) {
+        onSuccessLoad(xhr.response);
       } else {
         onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
@@ -32,7 +32,25 @@
     xhr.send();
   };
 
+  var postData = function (data, onSuccessUpload, onErrorUpload) {
+    var URL = 'https://javascript.pages.academy/keksobooking';
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+
+    xhr.addEventListener('load', function () {
+      if (xhr.status === StatusCode.SUCCESS) {
+        onSuccessUpload(xhr.response);
+      } else {
+        onErrorUpload('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
+      }
+    });
+
+    xhr.open('POST', URL);
+    xhr.send(data);
+  };
+
   window.data = {
-    loadData: loadData,
+    getData: getData,
+    postData: postData
   };
 })();

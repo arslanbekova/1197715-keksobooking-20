@@ -1,11 +1,23 @@
 'use strict';
 (function () {
+  var MAP_PIN_MAIN_HEIGHT = 80;
+  var MAP_PIN_MAIN_HALF_WIDTH = 32;
+  var announcementFormAddresField = document.getElementById('address');
 
-  var fillAddressField = function (coords) {
-    window.activate.announcementFormAddresField.value = coords.x + ', ' + coords.y;
+  // Вычисление адреса для формы
+  var fillAddressFieldEnabled = function () {
+    var coordinateX = Math.round(window.pin.mapPinMain.offsetLeft + MAP_PIN_MAIN_HALF_WIDTH);
+    var coordinateY = Math.round(window.pin.mapPinMain.offsetTop + MAP_PIN_MAIN_HEIGHT);
+
+    announcementFormAddresField.value = coordinateX + ', ' + coordinateY;
   };
 
-  window.fillAddressField = fillAddressField;
+  var fillAddressFieldDisabled = function () {
+    var coordinateX = Math.round(window.pin.mapPinMain.offsetLeft + MAP_PIN_MAIN_HALF_WIDTH);
+    var coordinateY = Math.round(window.pin.mapPinMain.offsetTop + MAP_PIN_MAIN_HEIGHT / 2);
+
+    announcementFormAddresField.value = coordinateX + ', ' + coordinateY;
+  };
 
   // валидация полей количество комнат и количество гостей
   var roomNumbers = document.getElementById('room_number');
@@ -29,11 +41,11 @@
   };
 
   // валидация поля "цена за ночь"
-  var TypeOfHousing = document.getElementById('type');
+  var typeOfHousing = document.getElementById('type');
   var pricePerNight = document.getElementById('price');
 
   var checkPricePerNightValidity = function () {
-    var TypeOfHousingValue = TypeOfHousing.options[TypeOfHousing.selectedIndex].value;
+    var TypeOfHousingValue = typeOfHousing.options[typeOfHousing.selectedIndex].value;
 
     if (TypeOfHousingValue === 'bungalo') {
       pricePerNight.setAttribute('min', 0);
@@ -61,7 +73,7 @@
   });
 
   window.addEventListener('load', checkPricePerNightValidity);
-  TypeOfHousing.addEventListener('change', checkPricePerNightValidity);
+  typeOfHousing.addEventListener('change', checkPricePerNightValidity);
 
   // валидация полей въезд/выезд
   var announcementForm = document.querySelector('.ad-form');
@@ -69,4 +81,112 @@
     announcementForm.timein.value = evt.target.value;
     announcementForm.timeout.value = evt.target.value;
   });
+
+  // отправка формы
+  var successMessageTemplate = document.querySelector('#success')
+    .content
+    .querySelector('.success');
+
+  var errorMessageTemplate = document.querySelector('#error')
+    .content
+    .querySelector('.error');
+
+  announcementForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.data.postData(new FormData(announcementForm), onSuccessUpload, onErrorUpload);
+  });
+
+  var onSuccessUpload = function () {
+    showSuccessMessage();
+  };
+
+  var onErrorUpload = function (message) {
+    showErrorMessage(message);
+  };
+
+  // сообщение об успешной отправке
+  var showSuccessMessage = function (successMessage) {
+    var successMessageElement = successMessageTemplate.cloneNode(true);
+
+    var messageText = successMessageElement.querySelector('.success__message');
+    messageText.textContent = successMessage;
+
+    document.querySelector('main').appendChild(successMessageTemplate);
+
+    document.addEventListener('keydown', onSuccessMessageEscPress);
+    document.addEventListener('click', onSuccessMessageClick);
+  };
+
+  var onSuccessMessageEscPress = function (evt) {
+    window.utils.isEscEvent(evt, closeSuccessMessage);
+  };
+
+  var onSuccessMessageClick = function (evt) {
+    if (evt.target === document.querySelector('.success')) {
+      evt.preventDefault();
+      closeSuccessMessage();
+    }
+  };
+
+  var closeSuccessMessage = function () {
+    document.querySelector('.success').remove();
+    document.removeEventListener('keydown', onSuccessMessageEscPress);
+    document.removeEventListener('click', onSuccessMessageClick);
+    window.activate.deactivatePage();
+  };
+
+  // сообщение о неудачной отправке
+  var showErrorMessage = function (errorMessage) {
+    var errorMessageElement = errorMessageTemplate.cloneNode(true);
+
+    var messageText = errorMessageElement.querySelector('.error__message');
+    messageText.textContent = errorMessage;
+
+    var message = document.querySelector('main').appendChild(errorMessageTemplate);
+
+    var errorMessageButton = message.querySelector('.error__button');
+    errorMessageButton.addEventListener('click', onErrorMessageButtonClick);
+
+    document.addEventListener('keydown', onErrorMessageEscPress);
+    document.addEventListener('click', onErrorMessageClick);
+  };
+
+  var onErrorMessageEscPress = function (evt) {
+    window.utils.isEscEvent(evt, closeErrorMessage);
+  };
+
+  var onErrorMessageClick = function (evt) {
+    if (evt.target === document.querySelector('.error')) {
+      evt.preventDefault();
+      closeErrorMessage();
+    }
+  };
+
+  var onErrorMessageButtonClick = function () {
+    closeErrorMessage();
+  };
+
+  var closeErrorMessage = function () {
+    document.querySelector('.error').remove();
+    document.removeEventListener('keydown', onErrorMessageEscPress);
+    document.removeEventListener('click', onErrorMessageClick);
+    document.removeEventListener('click', onErrorMessageButtonClick);
+  };
+
+  // очистка формы
+  var clearFormButton = document.querySelector('.ad-form__reset');
+  clearFormButton.addEventListener('click', function () {
+    window.activate.deactivatePage();
+  });
+
+  clearFormButton.addEventListener('keydown', function (evt) {
+    window.utils.isEnterEvent(evt, window.activate.deactivatePage);
+  });
+
+  window.form = {
+    onSuccessUpload: onSuccessUpload,
+    onErrorUpload: onErrorUpload,
+    fillAddressFieldEnabled: fillAddressFieldEnabled,
+    fillAddressFieldDisabled: fillAddressFieldDisabled
+  };
 })();

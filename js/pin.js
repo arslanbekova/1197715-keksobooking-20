@@ -3,12 +3,12 @@
 (function () {
   var Y_GAP = 35;
   var X_GAP = 25;
-  var MAP_PIN_MAIN_HEIGHT = 80;
-  var MAP_PIN_MAIN_HALF_WIDTH = 32;
   var MAX_X_POSITION = 1200;
   var MIN_X_POSITION = 0;
   var MAX_Y_POSITION = 630;
   var MIN_Y_POSITION = 130;
+  var MAIN_PIN_DEFUALUT_LEFT = 570;
+  var MAIN_PIN_DEFUALUT_TOP = 375;
 
   var map = document.querySelector('.map');
 
@@ -42,6 +42,15 @@
     similarListPin.appendChild(fragment);
   };
 
+  // удаление пинов
+  var removePins = function () {
+    var renderedPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+    renderedPins.forEach(function (pin) {
+      pin.remove();
+    });
+  };
+
+  // перетаскивание главного пина
   mapPinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
@@ -82,12 +91,7 @@
         mapPinMain.style.top = mapPinMainPosition.y + 'px';
       }
 
-      var coordsForAddressField = {
-        x: mapPinMainPosition.x + MAP_PIN_MAIN_HALF_WIDTH,
-        y: mapPinMainPosition.y + MAP_PIN_MAIN_HEIGHT
-      };
-
-      window.fillAddressField(coordsForAddressField);
+      window.form.fillAddressFieldEnabled();
     };
 
     var onMouseUp = function (upEvt) {
@@ -101,8 +105,16 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
+  // дефолтная позиция главного пина
+  var setMapPinMainDefualutPosition = function () {
+    mapPinMain.style.left = MAIN_PIN_DEFUALUT_LEFT + 'px';
+    mapPinMain.style.top = MAIN_PIN_DEFUALUT_TOP + 'px';
+  };
+
   window.pin = {
     renderMapPins: renderMapPins,
+    removePins: removePins,
+    setMapPinMainDefualutPosition: setMapPinMainDefualutPosition,
     mapPinMain: mapPinMain,
     similarListPin: similarListPin,
   };

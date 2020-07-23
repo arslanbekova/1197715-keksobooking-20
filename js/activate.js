@@ -1,13 +1,7 @@
 'use strict';
 (function () {
-  var PIN_X_GAP = 32;
-  var PIN_HEIGHT = 80;
-  var PIN_LEFT = 570;
-  var PIN_TOP = 375;
-
   var announcementForm = document.querySelector('.ad-form');
   var announcementFormAddresField = document.getElementById('address');
-  announcementFormAddresField.setAttribute('value', '601, 406');
   var announcementFormFields = announcementForm.children;
   var filterForm = document.querySelector('.map__filters');
   var filterFormFields = filterForm.children;
@@ -21,18 +15,42 @@
 
       window.utils.removeAttribute(announcementFormFields, 'disabled');
       window.utils.removeAttribute(filterFormFields, 'disabled');
+      window.form.fillAddressFieldEnabled();
 
-      window.data.loadData('https://javascript.pages.academy/keksobooking/data', window.onSuccess);
-
-      var pinX = PIN_LEFT + PIN_X_GAP;
-      var pinY = PIN_TOP + PIN_HEIGHT;
-      announcementFormAddresField.setAttribute('value', pinX + ',' + ' ' + pinY);
+      window.data.getData('https://javascript.pages.academy/keksobooking/data', window.map.onSuccessLoad);
     }
   };
+
+  // функция деактивации страницы
+  var deactivatePage = function () {
+    map.classList.add('map--faded');
+    announcementForm.classList.add('ad-form--disabled');
+    filterForm.classList.add('hidden');
+
+    window.utils.setAttribute(announcementFormFields, 'disabled', true);
+    window.utils.setAttribute(filterFormFields, 'disabled', true);
+
+    window.pin.setMapPinMainDefualutPosition();
+    window.pin.removePins();
+
+    if (window.map.getElementAnnouncementCard() !== null) {
+      window.map.getElementAnnouncementCard().remove();
+    }
+
+    window.utils.addEventListenerOnce(window.pin.mapPinMain, 'mousedown', activatePage);
+    window.utils.addEventListenerOnce(window.pin.mapPinMain, 'keydown', activatePage);
+
+    window.form.fillAddressFieldDisabled();
+    announcementForm.reset();
+    filterForm.reset();
+  };
+
+
   window.activate = {
     announcementFormAddresField: announcementFormAddresField,
     announcementFormFields: announcementFormFields,
     filterFormFields: filterFormFields,
     activatePage: activatePage,
+    deactivatePage: deactivatePage
   };
 })();

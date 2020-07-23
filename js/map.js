@@ -58,7 +58,8 @@
     }
   };
 
-  var onSuccess = function (data) {
+  // успешная загрузка данных с сервера
+  var onSuccessLoad = function (data) {
     window.pin.renderMapPins(data);
     window.pin.similarListPin.addEventListener('click', function (evt) {
       renderAnnouncementPopup(evt, data);
@@ -72,5 +73,9 @@
     });
   };
 
-  window.onSuccess = onSuccess;
+
+  window.map = {
+    onSuccessLoad: onSuccessLoad,
+    getElementAnnouncementCard: getElementAnnouncementCard,
+  };
 })();
