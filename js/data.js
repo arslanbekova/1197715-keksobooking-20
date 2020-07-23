@@ -5,7 +5,7 @@
     SUCCESS: 200,
   };
 
-  var getData = function (url, onSuccessLoad, onError) {
+  var getData = function (url, onSuccessLoad, onErrorLoad) {
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
@@ -13,8 +13,7 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.SUCCESS) {
         onSuccessLoad(xhr.response);
-      } else {
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        return
       }
     });
 
@@ -40,9 +39,8 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.SUCCESS) {
         onSuccessUpload(xhr.response);
-      } else {
-        onErrorUpload('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
+      onErrorUpload('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
     });
 
     xhr.open('POST', URL);

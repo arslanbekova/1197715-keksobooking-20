@@ -73,7 +73,6 @@
     });
   };
 
-
   window.map = {
     onSuccessLoad: onSuccessLoad,
     getElementAnnouncementCard: getElementAnnouncementCard,
