@@ -17,8 +17,23 @@
       window.utils.removeAttribute(filterFormFields, 'disabled');
       window.form.fillAddressFieldEnabled();
 
-      window.data.getData('https://javascript.pages.academy/keksobooking/data', window.map.onSuccessLoad);
+      window.data.getData('https://javascript.pages.academy/keksobooking/data', onSuccessLoad);
     }
+  };
+
+  // успешная загрузка данных с сервера
+  var onSuccessLoad = function (data) {
+    var announcements = window.filter.getFilteredData(data);
+
+    window.filter.filterForm.addEventListener('change', function () {
+      var announcementsFiltred = window.filter.getFilteredData(data);
+      window.pin.removePins();
+      if (window.map.getElementAnnouncementCard() !== null) {
+        window.map.getElementAnnouncementCard().remove();
+      }
+      window.pin.renderMapPins(announcementsFiltred);
+    });
+    window.pin.renderMapPins(announcements);
   };
 
   // функция деактивации страницы
@@ -51,6 +66,7 @@
     announcementFormFields: announcementFormFields,
     filterFormFields: filterFormFields,
     activatePage: activatePage,
-    deactivatePage: deactivatePage
+    deactivatePage: deactivatePage,
+    onSuccessLoad: onSuccessLoad
   };
 })();
