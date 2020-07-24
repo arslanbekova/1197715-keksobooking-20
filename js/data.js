@@ -5,7 +5,7 @@
     SUCCESS: 200,
   };
 
-  var getData = function (url, onSuccessLoad, onError) {
+  var getData = function (url, onSuccessLoad, onErrorLoad) {
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
@@ -13,17 +13,16 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.SUCCESS) {
         onSuccessLoad(xhr.response);
-      } else {
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
+      onErrorLoad('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
     });
 
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
+      onErrorLoad('Произошла ошибка соединения');
     });
 
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      onErrorLoad('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
     xhr.timeout = 10000; // 10s
@@ -40,9 +39,8 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.SUCCESS) {
         onSuccessUpload(xhr.response);
-      } else {
-        onErrorUpload('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
+      onErrorUpload('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
     });
 
     xhr.open('POST', URL);

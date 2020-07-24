@@ -40,6 +40,17 @@
       fragment.appendChild(getMapPin(data[i], i));
     }
     similarListPin.appendChild(fragment);
+
+    similarListPin.addEventListener('click', function (evt) {
+      window.map.renderAnnouncementPopup(evt, data);
+    });
+
+    similarListPin.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        evt.preventDefault();
+        window.map.renderAnnouncementPopup(evt, data);
+      }
+    });
   };
 
   // удаление пинов

@@ -53,29 +53,13 @@
       } else if (!activeElement.classList.contains('map__pin--main')) {
         getElementAnnouncementCard().remove();
         activeMapPin.classList.remove('map__pin--active');
-        helpRenderAnnouncementPopup(activeElement, data);
+        helpRenderAnnouncementPopup(evt.target, data);
       }
     }
   };
 
-  // успешная загрузка данных с сервера
-  var onSuccessLoad = function (data) {
-    window.pin.renderMapPins(data);
-    window.pin.similarListPin.addEventListener('click', function (evt) {
-      renderAnnouncementPopup(evt, data);
-    });
-
-    window.pin.similarListPin.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
-        evt.preventDefault();
-        renderAnnouncementPopup(evt, data);
-      }
-    });
-  };
-
-
   window.map = {
-    onSuccessLoad: onSuccessLoad,
     getElementAnnouncementCard: getElementAnnouncementCard,
+    renderAnnouncementPopup: renderAnnouncementPopup
   };
 })();
