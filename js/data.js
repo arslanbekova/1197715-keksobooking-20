@@ -13,6 +13,7 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.SUCCESS) {
         onSuccessLoad(xhr.response);
+        return;
       }
       onErrorLoad('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
     });

@@ -26,13 +26,16 @@
     var announcements = window.filter.getFilteredData(data);
 
     window.filter.filterForm.addEventListener('change', function () {
-      var announcementsFiltred = window.filter.getFilteredData(data);
-      window.pin.removePins();
-      if (window.map.getElementAnnouncementCard() !== null) {
-        window.map.getElementAnnouncementCard().remove();
-      }
-      window.pin.renderMapPins(announcementsFiltred);
+      window.debounce(function () {
+        var announcementsFiltred = window.filter.getFilteredData(announcements);
+        window.pin.removePins();
+        if (window.map.getElementAnnouncementCard() !== null) {
+          window.map.getElementAnnouncementCard().remove();
+        }
+        window.pin.renderMapPins(announcementsFiltred);
+      })();
     });
+
     window.pin.renderMapPins(announcements);
   };
 
