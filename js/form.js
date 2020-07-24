@@ -79,8 +79,8 @@
   var announcementForm = document.querySelector('.ad-form');
   announcementForm.addEventListener('change', function (evt) {
     if (evt.target === announcementForm.timein || evt.target === announcementForm.timeout) {
-    announcementForm.timein.value = evt.target.value;
-    announcementForm.timeout.value = evt.target.value;
+      announcementForm.timein.value = evt.target.value;
+      announcementForm.timeout.value = evt.target.value;
     }
   });
 
