@@ -8,7 +8,7 @@
   var map = document.querySelector('.map');
 
   // функция активации страницы
-  var activatePage = function (evt) {
+  var setActive = function (evt) {
     if (evt.which === 1 || evt.key === 'Enter') {
       map.classList.remove('map--faded');
       announcementForm.classList.remove('ad-form--disabled');
@@ -17,33 +17,14 @@
       window.utils.removeAttribute(filterFormFields, 'disabled');
       window.form.fillAddressFieldEnabled();
 
-      window.data.getData('https://javascript.pages.academy/keksobooking/data', onSuccessLoad);
+      window.data.getData('https://javascript.pages.academy/keksobooking/data', window.map.onSuccessLoad);
     }
   };
 
-  // успешная загрузка данных с сервера
-  var onSuccessLoad = function (data) {
-    var announcements = window.filter.getFilteredData(data);
-
-    window.filter.filterForm.addEventListener('change', function () {
-      window.debounce(function () {
-        var announcementsFiltred = window.filter.getFilteredData(announcements);
-        window.pin.removePins();
-        if (window.map.getElementAnnouncementCard() !== null) {
-          window.map.getElementAnnouncementCard().remove();
-        }
-        window.pin.renderMapPins(announcementsFiltred);
-      })();
-    });
-
-    window.pin.renderMapPins(announcements);
-  };
-
   // функция деактивации страницы
-  var deactivatePage = function () {
+  var setInactive = function () {
     map.classList.add('map--faded');
     announcementForm.classList.add('ad-form--disabled');
-    filterForm.classList.add('hidden');
 
     window.utils.setAttribute(announcementFormFields, 'disabled', true);
     window.utils.setAttribute(filterFormFields, 'disabled', true);
@@ -55,21 +36,21 @@
       window.map.getElementAnnouncementCard().remove();
     }
 
-    window.utils.addEventListenerOnce(window.pin.mapPinMain, 'mousedown', activatePage);
-    window.utils.addEventListenerOnce(window.pin.mapPinMain, 'keydown', activatePage);
+    window.utils.addEventListenerOnce(window.pin.mapPinMain, 'mousedown', setActive);
+    window.utils.addEventListenerOnce(window.pin.mapPinMain, 'keydown', setActive);
 
-    window.form.fillAddressFieldDisabled();
     announcementForm.reset();
+    window.form.fillAddressFieldDisabled();
+    window.form.checkPricePerNightValidity();
     filterForm.reset();
   };
 
 
-  window.activate = {
+  window.pageStatus = {
     announcementFormAddresField: announcementFormAddresField,
     announcementFormFields: announcementFormFields,
     filterFormFields: filterFormFields,
-    activatePage: activatePage,
-    deactivatePage: deactivatePage,
-    onSuccessLoad: onSuccessLoad
+    setActive: setActive,
+    setInactive: setInactive,
   };
 })();

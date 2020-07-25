@@ -1,7 +1,6 @@
 'use strict';
 (function () {
   window.utils = {
-
     // функция добавления обработчика событий только один раз
     addEventListenerOnce: function (target, type, listener) {
       target.addEventListener(type, function fn(evt) {

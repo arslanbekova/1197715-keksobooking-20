@@ -134,7 +134,7 @@
     document.querySelector('.success').remove();
     document.removeEventListener('keydown', onSuccessMessageEscPress);
     document.removeEventListener('click', onSuccessMessageClick);
-    window.activate.deactivatePage();
+    window.pageStatus.setInactive();
   };
 
   // сообщение о неудачной отправке
@@ -178,17 +178,18 @@
   // очистка формы
   var clearFormButton = document.querySelector('.ad-form__reset');
   clearFormButton.addEventListener('click', function () {
-    window.activate.deactivatePage();
+    window.pageStatus.setInactive();
   });
 
   clearFormButton.addEventListener('keydown', function (evt) {
-    window.utils.isEnterEvent(evt, window.activate.deactivatePage);
+    window.utils.isEnterEvent(evt, window.pageStatus.setInactive);
   });
 
   window.form = {
     onSuccessUpload: onSuccessUpload,
     onErrorUpload: onErrorUpload,
     fillAddressFieldEnabled: fillAddressFieldEnabled,
-    fillAddressFieldDisabled: fillAddressFieldDisabled
+    fillAddressFieldDisabled: fillAddressFieldDisabled,
+    checkPricePerNightValidity,
   };
 })();

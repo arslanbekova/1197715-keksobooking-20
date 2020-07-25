@@ -5,6 +5,8 @@
     SUCCESS: 200,
   };
 
+  var ERROR_TIMEOUT = 10000; // 10s
+
   var getData = function (url, onSuccessLoad, onErrorLoad) {
     var xhr = new XMLHttpRequest();
 
@@ -26,7 +28,7 @@
       onErrorLoad('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = 10000; // 10s
+    xhr.timeout = ERROR_TIMEOUT;
 
     xhr.open('GET', url);
     xhr.send();
@@ -40,6 +42,7 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.SUCCESS) {
         onSuccessUpload(xhr.response);
+        return
       }
       onErrorUpload('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
     });

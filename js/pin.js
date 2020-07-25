@@ -1,14 +1,16 @@
 'use strict';
 
 (function () {
-  var Y_GAP = 35;
-  var X_GAP = 25;
   var MAX_X_POSITION = 1200;
   var MIN_X_POSITION = 0;
   var MAX_Y_POSITION = 630;
   var MIN_Y_POSITION = 130;
+  var Y_GAP = 15;
+  var PIN_HEIGHT = 65;
+  var PIN_WIDTH = 84;
   var MAIN_PIN_DEFUALUT_LEFT = 570;
   var MAIN_PIN_DEFUALUT_TOP = 375;
+  var MAX_NUMBER_RENDERED_PINS = 5;
 
   var map = document.querySelector('.map');
 
@@ -24,8 +26,8 @@
 
     var mapPinElement = similarMapPinTemplate.cloneNode(true);
 
-    mapPinElement.style.left = announcement.location.x + X_GAP + 'px';
-    mapPinElement.style.top = announcement.location.y - Y_GAP + 'px';
+    mapPinElement.style.left = announcement.location.x - (PIN_WIDTH / 2) + 'px';
+    mapPinElement.style.top = announcement.location.y - PIN_HEIGHT + 'px';
     mapPinElement.querySelector('img').alt = announcement.offer.title;
     mapPinElement.querySelector('img').src = announcement.author.avatar;
     mapPinElement.querySelector('img').setAttribute('data-number', i);
@@ -36,7 +38,7 @@
   // функция заполнения блока DOM-элементами (отрисовка пинов)
   var renderMapPins = function (data) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < Math.min(data.length, MAX_NUMBER_RENDERED_PINS); i++) {
       fragment.appendChild(getMapPin(data[i], i));
     }
     similarListPin.appendChild(fragment);
@@ -89,10 +91,10 @@
       };
 
       var Border = {
-        TOP: MIN_Y_POSITION,
-        BOTTOM: MAX_Y_POSITION - mapPinMain.offsetHeight,
-        LEFT: MIN_X_POSITION - mapPinMain.offsetWidth / 2,
-        RIGHT: MAX_X_POSITION - mapPinMain.offsetWidth / 2
+        TOP: MIN_Y_POSITION - mapPinMain.offsetHeight - Y_GAP,
+        BOTTOM: MAX_Y_POSITION - mapPinMain.offsetHeight - Y_GAP,
+        LEFT: MIN_X_POSITION - Math.floor(mapPinMain.offsetWidth / 2),
+        RIGHT: MAX_X_POSITION - Math.floor(mapPinMain.offsetWidth / 2)
       };
 
       if (mapPinMainPosition.x >= Border.LEFT && mapPinMainPosition.x <= Border.RIGHT) {

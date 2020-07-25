@@ -1,11 +1,10 @@
 'use strict';
 (function () {
   var DEFAULT_VALUE = 'any';
-  var MAX_NUMBER_RENDERED_PINS = 5;
 
-  var PRICES = {
-    min: 10000,
-    max: 50000
+  var Prices = {
+    MIN: 10000,
+    MAX: 50000
   };
 
   var filterForm = document.querySelector('.map__filters');
@@ -26,9 +25,9 @@
   var checkAnnouncementPrice = function (element) {
     if (pricePerNightSelect.value !== DEFAULT_VALUE) {
       var pricePerNightFilterValues = {
-        'middle': element.offer.price >= PRICES.min && element.offer.price < PRICES.max,
-        'low': element.offer.price < PRICES.min,
-        'high': element.offer.price >= PRICES.max
+        'middle': element.offer.price >= Prices.MIN && element.offer.price <= Prices.MAX,
+        'low': element.offer.price < Prices.MIN,
+        'high': element.offer.price > Prices.MAX
       };
       return pricePerNightFilterValues[pricePerNightSelect.value];
     }
@@ -54,7 +53,7 @@
     return announcements.filter(function (announcement) {
       return checkAnnouncementTypeOfHousing(announcement) && checkAnnouncementRoomNumbers(announcement) &&
         checkAnnouncementGuestsCount(announcement) && checkAnnouncementPrice(announcement) && checkFeatures(announcement);
-    }).slice(0, MAX_NUMBER_RENDERED_PINS);
+    });
   };
 
   window.filter = {

@@ -22,24 +22,24 @@
   };
 
   // закрытие карточки объявления по клику и нажатию на esc
-  var closeAnnouncementCard = function () {
+  var AnnouncementCardClose = function () {
     getElementAnnouncementCard().remove();
     var activeMapPin = document.querySelector('.map__pin--active');
     activeMapPin.classList.remove('map__pin--active');
-    document.removeEventListener('keydown', closeAnnouncementCardOnEsc);
+    document.removeEventListener('keydown', onAnnouncementCardCloseEscPress);
   };
 
 
-  var closeAnnouncementCardOnEsc = function (evt) {
-    window.utils.isEscEvent(evt, closeAnnouncementCard);
+  var onAnnouncementCardCloseEscPress = function (evt) {
+    window.utils.isEscEvent(evt, AnnouncementCardClose);
   };
 
   // helper для отрисовки карточки
   var helpRenderAnnouncementPopup = function (evtTarget, data) {
     window.renderAnnouncementCards(data, evtTarget.dataset.number);
     addElementActiveClass(evtTarget);
-    document.addEventListener('keydown', closeAnnouncementCardOnEsc);
-    getElementAnnouncementCardClose().addEventListener('click', closeAnnouncementCard);
+    document.addEventListener('keydown', onAnnouncementCardCloseEscPress);
+    getElementAnnouncementCardClose().addEventListener('click', AnnouncementCardClose);
   };
 
   // отрисовка карточки объявления по клику или нажатию на Enter
@@ -58,8 +58,27 @@
     }
   };
 
+  // успешная загрузка данных с сервера
+  var onSuccessLoad = function (data) {
+    var announcements = window.filter.getFilteredData(data);
+
+    window.filter.filterForm.addEventListener('change', function () {
+      window.debounce(function () {
+        var announcementsFiltred = window.filter.getFilteredData(announcements);
+        window.pin.removePins();
+        if (getElementAnnouncementCard() !== null) {
+          getElementAnnouncementCard().remove();
+        }
+        window.pin.renderMapPins(announcementsFiltred);
+      })();
+    });
+
+    window.pin.renderMapPins(announcements);
+  };
+
   window.map = {
     getElementAnnouncementCard: getElementAnnouncementCard,
-    renderAnnouncementPopup: renderAnnouncementPopup
+    renderAnnouncementPopup: renderAnnouncementPopup,
+    onSuccessLoad: onSuccessLoad,
   };
 })();

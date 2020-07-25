@@ -12,27 +12,6 @@
     BUNGALO: 'Бунгало',
   };
 
-  var getRuTypeOfHousing = function (typeOfHousing) {
-    switch (typeOfHousing) {
-      case 'palace':
-        typeOfHousing = RuTypeOfHousing.PALACE;
-        break;
-      case 'flat':
-        typeOfHousing = RuTypeOfHousing.FLAT;
-        break;
-      case 'house':
-        typeOfHousing = RuTypeOfHousing.HOUSE;
-        break;
-      case 'bungalo':
-        typeOfHousing = RuTypeOfHousing.BUNGALO;
-        break;
-      default:
-        typeOfHousing = RuTypeOfHousing.FLAT;
-        break;
-    }
-    return typeOfHousing;
-  };
-
   var RuFacility = {
     WIFI: 'WiFi',
     DISHWASHER: 'Посудомоечная машина',
@@ -40,30 +19,6 @@
     WASHER: 'Стиральная машинка',
     ELEVATOR: 'Лифт',
     CONDITIONER: 'Кондиционер',
-  };
-
-  var getRuFacilities = function (facility) {
-    switch (facility) {
-      case 'wifi':
-        facility = RuFacility.WIFI;
-        break;
-      case 'dishwasher':
-        facility = RuFacility.DISHWASHER;
-        break;
-      case 'parking':
-        facility = RuFacility.PARKING;
-        break;
-      case 'washer':
-        facility = RuFacility.WASHER;
-        break;
-      case 'elevator':
-        facility = RuFacility.ELEVATOR;
-        break;
-      case 'conditioner':
-        facility = RuFacility.CONDITIONER;
-        break;
-    }
-    return facility;
   };
 
   // функция создания DOM-элемента (карточка объявления)
@@ -76,7 +31,7 @@
     announcementCardElement.querySelector('.popup__text--price').textContent = announcement.offer.price + '₽/ночь';
 
     var typeOfHousing = announcement.offer.type;
-    announcementCardElement.querySelector('.popup__type').textContent = getRuTypeOfHousing(typeOfHousing);
+    announcementCardElement.querySelector('.popup__type').textContent = RuTypeOfHousing[typeOfHousing.toUpperCase()];
 
     announcementCardElement.querySelector('.popup__text--capacity').textContent = announcement.offer.rooms + ' ' + 'комнаты для' + ' ' + announcement.offer.guests + ' ' + 'гостей';
     announcementCardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + ' ' + announcement.offer.checkin + ',' + ' ' + 'выезд до' + ' ' + announcement.offer.checkout;
@@ -84,14 +39,12 @@
     var featuresArray = announcement.offer.features;
     featuresArray.forEach(function (feature) {
       var featuresList = announcementCardElement.querySelector('.popup__features');
-      var fragment = document.createDocumentFragment();
       var newFeatureElement = document.createElement('li');
 
       newFeatureElement.className = 'popup__feature--' + feature;
-      newFeatureElement.textContent = getRuFacilities(feature);
+      newFeatureElement.textContent = RuFacility[feature.toUpperCase()];
 
-      fragment.appendChild(newFeatureElement);
-      featuresList.appendChild(fragment);
+      featuresList.appendChild(newFeatureElement);
     });
 
     announcementCardElement.querySelector('.popup__description').textContent = announcement.offer.description;
@@ -99,7 +52,6 @@
     var photosArray = announcement.offer.photos;
     photosArray.forEach(function (photo) {
       var photosList = announcementCardElement.querySelector('.popup__photos');
-      var fragment = document.createDocumentFragment();
       var newPhotoElement = document.createElement('img');
 
       newPhotoElement.className = 'popup__photo';
@@ -108,8 +60,7 @@
       newPhotoElement.alt = 'Фотография жилья';
       newPhotoElement.src = photo;
 
-      fragment.appendChild(newPhotoElement);
-      photosList.appendChild(fragment);
+      photosList.appendChild(newPhotoElement);
     });
 
     announcementCardElement.querySelector('.popup__avatar').src = announcement.author.avatar;
@@ -119,12 +70,8 @@
 
   // функция заполнения блока DOM-элементами (отрисовка карточек)
   var renderAnnouncementCards = function (data, elem) {
-    var map = document.querySelector('.map');
-    var filter = map.querySelector('.map__filters-container');
-    var fragment = document.createDocumentFragment();
-    fragment.appendChild(getAnnouncementCard(data[elem]));
-
-    map.insertBefore(fragment, filter);
+    var mapPins = document.querySelector('.map__pins');
+    mapPins.after(getAnnouncementCard(data[elem]));
   };
 
   window.renderAnnouncementCards = renderAnnouncementCards;
