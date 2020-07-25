@@ -42,7 +42,7 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.SUCCESS) {
         onSuccessUpload(xhr.response);
-        return
+        return;
       }
       onErrorUpload('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
     });

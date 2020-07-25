@@ -190,6 +190,6 @@
     onErrorUpload: onErrorUpload,
     fillAddressFieldEnabled: fillAddressFieldEnabled,
     fillAddressFieldDisabled: fillAddressFieldDisabled,
-    checkPricePerNightValidity,
+    checkPricePerNightValidity: checkPricePerNightValidity
   };
 })();
