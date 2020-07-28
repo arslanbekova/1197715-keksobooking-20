@@ -1,6 +1,7 @@
 'use strict';
 (function () {
   var DEFAULT_VALUE = 'any';
+  var MAX_NUMBER_RENDERED_PINS = 5;
 
   var Prices = {
     MIN: 10000,
@@ -49,11 +50,18 @@
     });
   };
 
-  var getFilteredData = function (announcements) {
-    return announcements.filter(function (announcement) {
-      return checkAnnouncementTypeOfHousing(announcement) && checkAnnouncementRoomNumbers(announcement) &&
-        checkAnnouncementGuestsCount(announcement) && checkAnnouncementPrice(announcement) && checkFeatures(announcement);
-    });
+  var getFilteredData = function (offers) {
+    var announcements = [];
+    var i = 0;
+    while (announcements.length < MAX_NUMBER_RENDERED_PINS && i < offers.length) {
+      var announcement = offers[i];
+      if (checkAnnouncementTypeOfHousing(announcement) && checkAnnouncementRoomNumbers(announcement) &&
+        checkAnnouncementGuestsCount(announcement) && checkAnnouncementPrice(announcement) && checkFeatures(announcement)) {
+        announcements.push(announcement);
+      }
+      i++;
+    }
+    return announcements;
   };
 
   window.filter = {

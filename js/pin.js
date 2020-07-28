@@ -10,7 +10,6 @@
   var PIN_WIDTH = 84;
   var MAIN_PIN_DEFUALUT_LEFT = 570;
   var MAIN_PIN_DEFUALUT_TOP = 375;
-  var MAX_NUMBER_RENDERED_PINS = 5;
 
   var map = document.querySelector('.map');
 
@@ -38,7 +37,7 @@
   // функция заполнения блока DOM-элементами (отрисовка пинов)
   var renderMapPins = function (data) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < Math.min(data.length, MAX_NUMBER_RENDERED_PINS); i++) {
+    for (var i = 0; i < data.length; i++) {
       fragment.appendChild(getMapPin(data[i], i));
     }
     similarListPin.appendChild(fragment);

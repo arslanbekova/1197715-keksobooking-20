@@ -60,9 +60,10 @@
 
   // успешная загрузка данных с сервера
   var onSuccessLoad = function (data) {
-    var announcements = window.filter.getFilteredData(data);
+    var allAnnouncements = window.filter.getFilteredData(data);
 
     window.filter.filterForm.addEventListener('change', function () {
+      var announcements = window.filter.getFilteredData(data);
       window.debounce(function () {
         var announcementsFiltred = window.filter.getFilteredData(announcements);
         window.pin.removePins();
@@ -73,7 +74,7 @@
       })();
     });
 
-    window.pin.renderMapPins(announcements);
+    window.pin.renderMapPins(allAnnouncements);
   };
 
   window.map = {
